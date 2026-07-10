@@ -25,20 +25,25 @@ This engine does not wrap third-party libraries like BeautifulSoup, lxml, Scrapy
 
 ## Installation
 
-You can install the package locally in several ways:
+You can install the package in several ways:
 
-### 1. Developer Editable Mode (Recommended)
+### 1. Install from PyPI
+```bash
+pip install crawl-jobs
+```
+
+### 2. Developer Editable Mode (Recommended)
 From the root directory of this repository, run:
 ```bash
 pip install -e .
 ```
 
-### 2. Standard Local Installation
+### 3. Standard Local Installation
 ```bash
 pip install .
 ```
 
-### 3. Direct GitHub Installation (For other users)
+### 4. Direct GitHub Installation (For other users)
 ```bash
 pip install git+https://github.com/vrushabh-hirap/crawl.git
 ```
