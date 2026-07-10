@@ -1,0 +1,336 @@
+# Crawl: Scratch-built HTML Parser & Web Crawling Engine
+
+`crawl` is a production-quality, dependency-free Python library built entirely from scratch. It implements its own lexical tokenizer, tree construction parser, Document Object Model (DOM), CSS selector search engine, structured data extractor, HTML cleaner, and multi-format exporters.
+
+This engine does not wrap third-party libraries like BeautifulSoup, lxml, Scrapy, Selenium, or Playwright. Instead, it serves as a pure demonstration of browser-like parsing and scraping internals using Python's standard library.
+
+---
+
+## Table of Contents
+1. [Installation](#installation)
+2. [Technical Architecture](#technical-architecture)
+3. [API Reference](#api-reference)
+   - [Crawl](#crawl)
+   - [Page](#page)
+   - [Node](#node)
+   - [Response](#response)
+   - [Exceptions](#exceptions)
+4. [Usage Recipes](#usage-recipes)
+   - [Recipe 1: Local HTML Parsing & CSS Querying](#recipe-1-local-html-parsing--css-querying)
+   - [Recipe 2: Live Crawling with Redirect History](#recipe-2-live-crawling-with-redirect-history)
+   - [Recipe 3: Extracting Tables & Forms](#recipe-3-extracting-tables--forms)
+   - [Recipe 4: Decoupled Parsing, Cleaning, & Exporting](#recipe-4-decoupled-parsing-cleaning--exporting)
+
+---
+
+## Installation
+
+You can install the package locally in several ways:
+
+### 1. Developer Editable Mode (Recommended)
+From the root directory of this repository, run:
+```bash
+pip install -e .
+```
+
+### 2. Standard Local Installation
+```bash
+pip install .
+```
+
+### 3. Direct GitHub Installation (For other users)
+```bash
+pip install git+https://github.com/vrushabh-hirap/crawl.git
+```
+
+---
+
+## Technical Architecture
+
+The library is decoupled into distinct, modular subsystems:
+
+```
+                          ┌──────────────┐
+                          │  Downloader  │
+                          └──────┬───────┘
+                                 │ HTTP Response
+                                 ▼
+                          ┌──────────────┐
+                          │  Tokenizer   │
+                          └──────┬───────┘
+                                 │ Token Stream
+                                 ▼
+                          ┌──────────────┐
+                          │    Parser    │
+                          └──────┬───────┘
+                                 │ DOM Tree
+                                 ▼
+ ┌──────────────┐         ┌──────────────┐         ┌──────────────┐
+ │   Selector   │◄───────►│   DOM Node   │◄───────►│  Extractor   │
+ └──────────────┘         └──────┬───────┘         └──────────────┘
+                                 │ In-Place Cleanup
+                                 ▼
+                          ┌──────────────┐         ┌──────────────┐
+                          │   Cleaner    ├────────►│   Exporter   │
+                          └──────────────┘         └──────────────┘
+```
+
+1. **Downloader (`downloader.py`)**: Uses Python's built-in `urllib.request` HTTPS handlers to negotiate request headers, enforce timeouts, handle redirects, capture redirect hop chains, and configure SSL/TLS verification contexts.
+2. **Lexical Tokenizer (`tokenizer.py`)**: A character-by-character scanner implemented as a state machine. It converts raw markup text into discrete tags (`START_TAG`, `END_TAG`), character arrays (`TEXT`), docstrings (`DOCTYPE`), and comment blocks (`COMMENT`).
+3. **DOM Parser (`parser.py`)**: A stack-based builder that processes the token stream. It auto-closes unclosed nested tags based on parent tags and skips standard HTML void elements (such as `img`, `br`, `hr`, `input`, `meta`, `link`).
+4. **DOM Tree (`dom.py`)**: Represents elements, text blocks, comment lines, and doctype markers as `Node` structures. Supports DOM tree navigation (`append_child`, `remove_child`) and serialization (`inner_html`, `outer_html`).
+5. **Selector Engine (`selector.py`)**: Evaluates CSS queries left-to-right, processing tags, IDs, class names, descendant spacing, direct children (`>`), and comma lists, keeping nodes sorted in document pre-order.
+6. **Data Extractor (`extractor.py`)**: Isolates headers, paragraphs, titles, tables, forms, list items, links, and buttons, automatically resolving relative paths.
+7. **DOM Cleaner (`cleaner.py`)**: Collapses multiple whitespaces, decodes HTML entities, prunes empty nodes (ignoring void tags), and removes identical sibling subtrees.
+8. **Exporter (`exporter.py`)**: Outputs raw data arrays to structured CSV, JSON, or TXT formats.
+
+---
+
+## API Reference
+
+### `Crawl`
+The high-level user interface responsible for executing network transfers and returning parsed results.
+
+* **Constructor**:
+  ```python
+  from crawl import Crawl
+  crawler = Crawl(
+      default_headers: dict = None,   # Merged with standard request headers
+      timeout: float = 10.0,          # Connection timeout in seconds
+      verify_ssl: bool = True,         # Toggles SSL certificate verification
+      rate_limit_delay: float = 0.0,  # Delay (in seconds) between requests
+      obey_robots: bool = False       # Respect robots.txt directives (extension placeholder)
+  )
+  ```
+* **Methods**:
+  * **`fetch(url: str, headers: dict = None, timeout: float = None) -> Page`**: Downloads the target URL, parses its content, and returns a `Page` object.
+
+---
+
+### `Page`
+Returned by `Crawl.fetch()`. It represents a downloaded, parsed HTML document.
+
+* **Properties**:
+  * **`url`**: The final absolute URL of the page (after redirects) *(type: `str`)*.
+  * **`response`**: The raw network response object *(type: `Response`)*.
+  * **`node`**: The document's root Node *(type: `Node`)*.
+* **Extraction Methods**:
+  * **`title() -> str`**: Gets the page title (falls back to the first `<h1>` text if missing).
+  * **`paragraphs() -> List[str]`**: Gets the text of all `<p>` paragraph tags.
+  * **`images() -> List[str]`**: Gets absolute URLs of all `<img>` src paths.
+  * **`links() -> List[str]`**: Gets absolute URLs of all `<a>` anchor href paths.
+  * **`tables() -> List[List[List[str]]]`**: Gets row/column contents for all tables on the page.
+  * **`forms() -> List[Dict[str, Any]]`**: Gets metadata for all form actions, methods, and inputs.
+  * **`lists() -> List[List[str]]`**: Gets list items (`<li>`) grouped by parent list (`<ul>`/`<ol>`).
+  * **`buttons() -> List[Dict[str, str]]`**: Gets button nodes and button-type inputs (submit, reset).
+  * **`meta_tags() -> List[Dict[str, str]]`**: Gets meta name, property, and content descriptors.
+  * **`headers() -> List[Dict[str, str]]`**: Gets headings (H1–H6) in document order.
+* **DOM & Traversal Methods**:
+  * **`find(selector: str) -> Optional[Node]`**: Returns the first node matching the CSS selector.
+  * **`find_all(selector: str) -> List[Node]`**: Returns all nodes matching the CSS selector.
+  * **`get_text() -> str`**: Returns raw concatenated text content of the entire document.
+  * **`inner_html() -> str`**: Returns the serialized inner HTML of the document's children.
+  * **`outer_html() -> str`**: Returns the serialized outer HTML of the full DOM tree.
+* **Cleaning & Export Methods**:
+  * **`clean() -> None`**: Performs full DOM whitespace normalization, entity decoding, and duplicate sibling pruning in-place.
+  * **`export_json(filepath: str) -> None`**: Exports basic page metadata to a local JSON file.
+
+---
+
+### `Node`
+A class representing a single element, text node, comment, or doctype.
+
+* **Properties**:
+  * **`tag`**: Tag name in lowercase (e.g. `'div'`), or `None` for text nodes, or `#comment`/`#doctype` *(type: `Optional[str]`)*.
+  * **`attributes`**: Attribute key-value mapping (lowercased keys) *(type: `dict`)*.
+  * **`children`**: List of child DOM nodes *(type: `List[Node]`)*.
+  * **`parent`**: Parent element node, or `None` if it is a root *(type: `Optional[Node]`)*.
+  * **`text`**: Raw text content (used for text, comment, and doctype nodes) *(type: `Optional[str]`)*.
+* **Methods**:
+  * **`append_child(child: Node) -> None`**: Appends a child Node, managing parent links.
+  * **`remove_child(child: Node) -> None`**: Removes a child Node.
+  * **`get_attribute(name: str, default: str = None) -> Optional[str]`**: Case-insensitive attribute lookup.
+  * **`set_attribute(name: str, value: str) -> None`**: Sets or overrides a custom attribute.
+  * **`find(selector: str) -> Optional[Node]`**: Performs CSS selector lookup starting from this node.
+  * **`find_all(selector: str) -> List[Node]`**: Performs descendant CSS selector lookup.
+  * **`get_text() -> str`**: Returns recursive text inside this Node.
+  * **`inner_html() -> str`**: Serializes HTML contents of this Node's children.
+  * **`outer_html() -> str`**: Serializes the HTML structure of this node and its children.
+
+---
+
+### `Response`
+Represents the result of an HTTP transaction.
+
+* **Properties**:
+  * **`url`**: Final landing URL (after resolving redirects) *(type: `str`)*.
+  * **`status_code`**: HTTP status response code (e.g., `200`, `404`) *(type: `int`)*.
+  * **`headers`**: Dictionary of case-insensitive response headers *(type: `dict`)*.
+  * **`content`**: Raw binary content *(type: `bytes`)*.
+  * **`text`**: Decoded content string (automatically parses charset from headers) *(type: `str`)*.
+  * **`redirect_history`**: List of redirect hops: `[{'status': int, 'url': str, 'headers': dict}]` *(type: `List[dict]`)*.
+
+---
+
+### Exceptions
+
+* **`CrawlError`**: Base exception class.
+* **`DownloadError`**: Connection issues, timeouts, or SSL failures.
+* **`ParserError`**: Unrecoverable syntax errors during tokenization or parsing.
+* **`InvalidSelector`**: Invalid CSS selector structure.
+* **`NodeNotFound`**: Missing node during critical DOM traversals.
+* **`ExportError`**: File writing or serialization constraints failures.
+
+---
+
+## Usage Recipes
+
+### Recipe 1: Local HTML Parsing & CSS Querying
+You can parse a string of HTML and query elements directly using CSS selectors.
+
+```python
+from crawl.parser import parse_html
+
+html_content = """
+<div id="container">
+    <h1 class="title">Product Catalog</h1>
+    <ul class="items">
+        <li class="item" id="p-1">Laptop <span class="badge">Sale</span></li>
+        <li class="item" id="p-2">Phone</li>
+    </ul>
+</div>
+"""
+
+# 1. Parse string to DOM Node
+root = parse_html(html_content)
+
+# 2. Query by ID
+container = root.find("#container")
+print("Container ID attribute:", container.get_attribute("id"))
+
+# 3. Query by Class
+title_node = root.find(".title")
+print("Title Text:", title_node.get_text())
+
+# 4. Direct Child Selector (ul > li)
+list_items = root.find_all("ul.items > li")
+for item in list_items:
+    print(f"Item text: {item.get_text()} | ID: {item.get_attribute('id')}")
+
+# 5. Descendant Selector (div span)
+badges = root.find_all("div .badge")
+for badge in badges:
+    print("Found badge:", badge.get_text())
+```
+
+---
+
+### Recipe 2: Live Crawling with Redirect History
+Fetch a URL and inspect its headers, status, and redirect hops.
+
+```python
+from crawl import Crawl, CrawlError
+
+crawler = Crawl(timeout=5.0, verify_ssl=True)
+
+try:
+    # URL redirects http -> https
+    page = crawler.fetch("http://github.com")
+    
+    print("Final Landing URL:", page.url)
+    print("Response Status Code:", page.response.status_code)
+    print("Server Header:", page.response.headers.get("server"))
+    
+    # Inspect redirect history
+    if page.response.redirect_history:
+        print("\nRedirect Chain:")
+        for idx, hop in enumerate(page.response.redirect_history):
+            print(f" Hop {idx + 1}: Code {hop['status']} -> {hop['url']}")
+
+except CrawlError as e:
+    print("Crawling failed:", e)
+```
+
+---
+
+### Recipe 3: Extracting Tables & Forms
+Extract structured metadata from tables and interactive form fields.
+
+```python
+from crawl.parser import parse_html
+from crawl.extractor import extract_tables, extract_forms
+
+html_content = """
+<div>
+    <table>
+        <tr><th>Processor</th><th>Cores</th></tr>
+        <tr><td>Ryzen 9</td><td>16</td></tr>
+        <tr><td>Core i9</td><td>24</td></tr>
+    </table>
+
+    <form action="/login" method="POST">
+        <input type="text" name="username" value="user1">
+        <input type="password" name="password">
+        <button type="submit">Log In</button>
+    </form>
+</div>
+"""
+
+root = parse_html(html_content)
+
+# Extract Tables
+tables = extract_tables(root)
+print("Parsed Table Core List:")
+for table in tables:
+    for row in table:
+        print(f" - {row[0]} has {row[1]} cores")
+
+# Extract Forms
+forms = extract_forms(root, base_url="https://mysite.com")
+for form in forms:
+    print(f"\nForm URL: {form['action']} | Method: {form['method']}")
+    for field in form["inputs"]:
+        print(f"  Field: tag={field['tag']}, name={field['name']}, default={field.get('value')}")
+```
+
+---
+
+### Recipe 4: Decoupled Parsing, Cleaning, & Exporting
+Decouple parsing from cleaning and output the results to JSON, CSV, or TXT.
+
+```python
+import os
+from crawl.parser import parse_html
+from crawl.cleaner import clean_dom
+from crawl.extractor import extract_links
+from crawl.exporter import export_json, export_csv, export_txt
+
+html_content = """
+<html>
+<body>
+    <h1>   Clean   Me   &amp;   Export   </h1>
+    <p>   Some paragraph  </p>
+    <a href="/doc1">Doc 1</a>
+    <a href="/doc2">Doc 2</a>
+    <div class="empty-garbage"></div> <!-- gets pruned -->
+</body>
+</html>
+"""
+
+# 1. Parse DOM
+root = parse_html(html_content)
+
+# 2. Clean tree (normalizes text whitespace and entity unescaping)
+clean_dom(root)
+
+# 3. Extract Links
+links = extract_links(root, base_url="https://site.com")
+
+# 4. Export
+os.makedirs("./exports", exist_ok=True)
+export_json(links, "./exports/links.json")
+export_csv(links, "./exports/links.csv")
+export_txt(root.get_text(), "./exports/page_text.txt")
+
+print("Files saved in './exports/' successfully!")
+```
