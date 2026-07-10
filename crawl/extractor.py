@@ -1,8 +1,15 @@
-"""Data extraction engine for the crawl library.
+"""Data extraction engine for the crawl-any-website library.
 
-Provides utilities to extract structured components from a DOM tree,
-including links, titles, paragraphs, tables, forms, lists, meta tags,
-buttons, and headers. Automatically resolves absolute URLs where applicable.
+Provides helper functions to extract structured components from a DOM Node tree:
+- Page Title & Headings (H1 to H6)
+- Text paragraphs (<p> tags)
+- Image metadata (src, alt, title attributes)
+- Table grids (rows, cells data)
+- Form metadata (action, method, and fields like inputs, selects, textareas)
+- List items (ul, ol list items)
+- Anchor hyperlinks (href, text, title)
+- Interactive buttons and metadata (meta tags)
+- Link-related elements (resolving relative URLs against the target base URL)
 """
 
 import urllib.parse
@@ -14,8 +21,8 @@ def resolve_url(url: str, base_url: Optional[str]) -> str:
     """Helper to resolve a relative URL to an absolute one given a base URL.
 
     Args:
-        url: The URL to resolve.
-        base_url: The absolute base URL.
+        url: The raw URL string extracted from an HTML element.
+        base_url: The absolute base URL of the source page.
 
     Returns:
         The resolved absolute URL, or the original if base_url is not set.
@@ -24,6 +31,7 @@ def resolve_url(url: str, base_url: Optional[str]) -> str:
         return ""
     if not base_url:
         return url
+    # Use standard library urljoin to handle relative paths, queries, and anchors
     return urllib.parse.urljoin(base_url, url.strip())
 
 
@@ -33,15 +41,17 @@ def extract_title(node: Node) -> str:
     Checks the <title> tag first. If not present, falls back to the first <h1> tag.
 
     Args:
-        node: The reference DOM Node.
+        node: The reference DOM Node (usually the root or <head> element).
 
     Returns:
-        The title string, or an empty string if none found.
+        The title string, or an empty string if none is found.
     """
+    # 1. Search for <title> tag anywhere in the DOM
     title_nodes = node.find_all("title")
     if title_nodes:
         return title_nodes[0].get_text().strip()
 
+    # 2. Fall back to the first <h1> tag if title is missing
     h1_nodes = node.find_all("h1")
     if h1_nodes:
         return h1_nodes[0].get_text().strip()
@@ -50,19 +60,22 @@ def extract_title(node: Node) -> str:
 
 
 def extract_paragraphs(node: Node) -> List[str]:
-    """Extracts text contents of all <p> tags.
+    """Extracts text contents of all paragraph (<p>) tags.
 
     Args:
         node: The reference DOM Node.
 
     Returns:
-        List of paragraph text strings.
+        List of paragraph text strings, with empty paragraphs ignored.
     """
+    # Loops through all <p> tags and retrieves their plain text representation
     return [p.get_text().strip() for p in node.find_all("p") if p.get_text().strip()]
 
 
 def extract_images(node: Node, base_url: Optional[str] = None) -> List[Dict[str, str]]:
-    """Extracts metadata for all <img> tags.
+    """Extracts metadata for all image (<img>) tags.
+
+    Resolves relative paths in 'src' against the base URL.
 
     Args:
         node: The reference DOM Node.
@@ -76,6 +89,7 @@ def extract_images(node: Node, base_url: Optional[str] = None) -> List[Dict[str,
         src = img.get_attribute("src", "")
         if src:
             images.append({
+                # Resolve relative URL to absolute URL
                 "src": resolve_url(src, base_url),
                 "alt": img.get_attribute("alt", ""),
                 "title": img.get_attribute("title", "")
@@ -84,20 +98,22 @@ def extract_images(node: Node, base_url: Optional[str] = None) -> List[Dict[str,
 
 
 def extract_tables(node: Node) -> List[List[List[str]]]:
-    """Extracts data from HTML tables.
+    """Extracts data grids from HTML <table> elements.
 
     Args:
         node: The reference DOM Node.
 
     Returns:
         A list of tables. Each table is represented as a list of rows,
-        and each row is a list of cell text strings.
+        and each row is a list of cell text strings (td/th contents).
     """
     tables = []
     for table in node.find_all("table"):
         table_data = []
+        # Find all table rows
         for tr in table.find_all("tr"):
             row = []
+            # Extract cell data from direct children (cells must be <td> or <th>)
             for cell in tr.children:
                 if cell.tag in ("td", "th"):
                     row.append(cell.get_text().strip())
@@ -111,17 +127,20 @@ def extract_tables(node: Node) -> List[List[List[str]]]:
 def extract_forms(node: Node, base_url: Optional[str] = None) -> List[Dict[str, Any]]:
     """Extracts structured form metadata from the DOM.
 
+    Collects inputs, select dropdowns, and textareas, resolving target URLs.
+
     Args:
         node: The reference DOM Node.
         base_url: Optional base URL to resolve form action paths.
 
     Returns:
-        A list of dictionaries describing form action, method, and inputs.
+        A list of dictionaries describing form action, method, and input fields.
     """
     forms = []
     for form in node.find_all("form"):
         inputs = []
-        # Find all inputs
+        
+        # 1. Find all standard <input> fields
         for inp in form.find_all("input"):
             name = inp.get_attribute("name")
             if name:
@@ -132,7 +151,7 @@ def extract_forms(node: Node, base_url: Optional[str] = None) -> List[Dict[str, 
                     "value": inp.get_attribute("value", "")
                 })
 
-        # Find select dropdowns
+        # 2. Find all <select> dropdown fields and their options
         for sel in form.find_all("select"):
             name = sel.get_attribute("name")
             if name:
@@ -146,7 +165,7 @@ def extract_forms(node: Node, base_url: Optional[str] = None) -> List[Dict[str, 
                     "options": options
                 })
 
-        # Find textareas
+        # 3. Find all <textarea> multi-line text input fields
         for ta in form.find_all("textarea"):
             name = ta.get_attribute("name")
             if name:
@@ -156,6 +175,7 @@ def extract_forms(node: Node, base_url: Optional[str] = None) -> List[Dict[str, 
                     "value": ta.get_text()
                 })
 
+        # Resolve relative form submission action to absolute URL
         action = form.get_attribute("action", "")
         forms.append({
             "action": resolve_url(action, base_url) if action else "",
@@ -166,7 +186,7 @@ def extract_forms(node: Node, base_url: Optional[str] = None) -> List[Dict[str, 
 
 
 def extract_lists(node: Node) -> List[List[str]]:
-    """Extracts elements from unordered (ul) and ordered (ol) lists.
+    """Extracts list items from unordered (<ul>) and ordered (<ol>) lists.
 
     Args:
         node: The reference DOM Node.
@@ -175,6 +195,7 @@ def extract_lists(node: Node) -> List[List[str]]:
         List of lists containing text strings of <li> list items.
     """
     lists = []
+    # Search all lists on the page
     for lst in node.find_all("ul") + node.find_all("ol"):
         items = []
         for li in lst.find_all("li"):
@@ -185,7 +206,9 @@ def extract_lists(node: Node) -> List[List[str]]:
 
 
 def extract_links(node: Node, base_url: Optional[str] = None) -> List[Dict[str, str]]:
-    """Extracts all hyperlink anchor <a> tags.
+    """Extracts all hyperlink anchor (<a>) tags.
+
+    Resolves relative paths in 'href' against the base URL.
 
     Args:
         node: The reference DOM Node.
@@ -203,6 +226,7 @@ def extract_links(node: Node, base_url: Optional[str] = None) -> List[Dict[str, 
                 "href": resolve_url(href, base_url),
                 "title": a.get_attribute("title", "")
             }
+            # Add download attribute if present (indicates a file download)
             download = a.get_attribute("download")
             if download is not None:
                 link_data["download"] = download
@@ -213,12 +237,14 @@ def extract_links(node: Node, base_url: Optional[str] = None) -> List[Dict[str, 
 def extract_all_links_attributes(node: Node, base_url: Optional[str] = None) -> List[Dict[str, str]]:
     """Extracts URLs from tags containing link-related attributes: href, src, action, download.
 
+    Walks down all DOM nodes and returns a unified list of resource endpoints.
+
     Args:
         node: The reference DOM Node.
         base_url: Optional base URL to resolve URLs.
 
     Returns:
-        List of dicts representing extracted links (tag, attribute, raw_url, resolved_url).
+        List of dicts representing extracted links (tag, attribute, raw_value, resolved_url).
     """
     results = []
 
@@ -227,10 +253,11 @@ def extract_all_links_attributes(node: Node, base_url: Optional[str] = None) -> 
     candidates = [node] + get_descendants(node)
 
     for cand in candidates:
+        # Skip text, comments, and doctypes
         if cand.tag is None or cand.tag.startswith("#"):
             continue
 
-        # Check href
+        # Check 'href' attributes (hyperlinks, stylesheets)
         href = cand.get_attribute("href")
         if href:
             results.append({
@@ -240,7 +267,7 @@ def extract_all_links_attributes(node: Node, base_url: Optional[str] = None) -> 
                 "resolved_url": resolve_url(href, base_url)
             })
 
-        # Check src
+        # Check 'src' attributes (images, scripts, iframes)
         src = cand.get_attribute("src")
         if src:
             results.append({
@@ -250,7 +277,7 @@ def extract_all_links_attributes(node: Node, base_url: Optional[str] = None) -> 
                 "resolved_url": resolve_url(src, base_url)
             })
 
-        # Check action
+        # Check 'action' attributes (form submissions)
         action = cand.get_attribute("action")
         if action:
             results.append({
@@ -260,7 +287,7 @@ def extract_all_links_attributes(node: Node, base_url: Optional[str] = None) -> 
                 "resolved_url": resolve_url(action, base_url)
             })
 
-        # Check download
+        # Check 'download' attributes (file downloads)
         download = cand.get_attribute("download")
         if download:
             results.append({
@@ -283,14 +310,16 @@ def extract_buttons(node: Node) -> List[Dict[str, str]]:
         List of dictionaries with button details (text, type, name).
     """
     buttons = []
-    # Parse button tags
+    
+    # 1. Parse standard <button> tags
     for btn in node.find_all("button"):
         buttons.append({
             "text": btn.get_text().strip(),
             "type": btn.get_attribute("type", "button"),
             "name": btn.get_attribute("name", "")
         })
-    # Parse inputs that act as buttons
+        
+    # 2. Parse <input> tags that act as interactive buttons
     for inp in node.find_all("input"):
         type_ = inp.get_attribute("type", "").lower()
         if type_ in ("button", "submit", "reset"):
@@ -304,6 +333,8 @@ def extract_buttons(node: Node) -> List[Dict[str, str]]:
 
 def extract_meta_tags(node: Node) -> List[Dict[str, str]]:
     """Extracts metadata from all <meta> tags in the DOM.
+
+    Useful for fetching SEO tags, viewport details, and OpenGraph/Twitter descriptions.
 
     Args:
         node: The reference DOM Node.
@@ -322,7 +353,9 @@ def extract_meta_tags(node: Node) -> List[Dict[str, str]]:
 
 
 def extract_headers(node: Node) -> List[Dict[str, str]]:
-    """Extracts all headings (<h1> through <h6>).
+    """Extracts all structural headings (<h1> through <h6>).
+
+    Returned list is ordered in the sequence of their appearance in the DOM.
 
     Args:
         node: The reference DOM Node.
@@ -331,9 +364,10 @@ def extract_headers(node: Node) -> List[Dict[str, str]]:
         List of dictionaries detailing heading tag level and text.
     """
     headers = []
-    # Collect in order of appearance in the DOM by searching descendants
     from crawl.selector import get_descendants
     candidates = get_descendants(node)
+    
+    # Check each candidate node in document order
     for cand in candidates:
         if cand.tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
             headers.append({

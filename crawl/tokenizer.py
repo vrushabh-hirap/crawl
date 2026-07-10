@@ -122,6 +122,10 @@ class HTMLTokenizer:
     def tokenize(self) -> Generator[Token, None, None]:
         """Scans the HTML document and yields a sequence of Token objects.
 
+        This loops character-by-character through the HTML string. When it encounters
+        a '<', it checks if it signifies a comment, doctype, start tag, or end tag.
+        Otherwise, characters are buffered as TEXT tokens.
+
         Yields:
             Token objects sequentially.
         """
@@ -130,29 +134,34 @@ class HTMLTokenizer:
         while self.index < self.length:
             char = self._peek()
 
-            # Check if a tag, comment, or doctype starts
+            # Check if a tag, comment, or doctype starts here
             if char == "<":
-                # Check for comment
+                # Check for comment pattern: <!--
                 if self._peek(1) == "!" and self._peek(2) == "-" and self._peek(3) == "-":
+                    # If we had any accumulated text before this comment, yield it first
                     if text_buffer:
                         yield Token(TokenType.TEXT, "".join(text_buffer))
                         text_buffer = []
+                    # Parse the comment block completely
                     yield self._parse_comment()
                     continue
 
-                # Check for DOCTYPE
+                # Check for DOCTYPE pattern: <!DOCTYPE
                 if self._peek(1) == "!" and self.html[self.index + 1 : self.index + 9].lower() == "!doctype":
+                    # Yield any accumulated text first
                     if text_buffer:
                         yield Token(TokenType.TEXT, "".join(text_buffer))
                         text_buffer = []
+                    # Parse the DOCTYPE node
                     yield self._parse_doctype()
                     continue
 
                 # Check for standard end/start tags
                 next_char = self._peek(1)
                 is_end_tag = next_char == "/"
+                
                 # A start tag needs to start with an ASCII letter, '!', '?', or an underscore to be parsed as a tag.
-                # Otherwise we treat the '<' as normal text (e.g. in "a < b" or "< container").
+                # Otherwise, we treat the '<' as normal text (e.g. in mathematical expressions like "a < b").
                 is_valid_tag_start = (
                     is_end_tag
                     or next_char.isalpha()
@@ -160,6 +169,7 @@ class HTMLTokenizer:
                 )
 
                 if is_valid_tag_start:
+                    # Flush accumulated text before starting tag parsing
                     if text_buffer:
                         yield Token(TokenType.TEXT, "".join(text_buffer))
                         text_buffer = []
@@ -170,10 +180,10 @@ class HTMLTokenizer:
                         yield self._parse_start_tag()
                     continue
 
-            # Accumulate text content
+            # Accumulate normal text content into our buffer
             text_buffer.append(self._consume())
 
-        # Yield any remaining text
+        # Yield any remaining text at the end of the file
         if text_buffer:
             yield Token(TokenType.TEXT, "".join(text_buffer))
 

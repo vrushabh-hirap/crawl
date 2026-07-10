@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "crawl-jobs"
-version = "0.1.0"
+name = "crawl-any-website"
+version = "0.1.2"
 description = "A production-quality web crawling and HTML parsing engine built completely from scratch."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -21,3 +21,6 @@ classifiers = [
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["crawl*"]
+
+[project.scripts]
+crawl-any-website = "crawl.cli:main"

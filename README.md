@@ -29,7 +29,7 @@ You can install the package in several ways:
 
 ### 1. Install from PyPI
 ```bash
-pip install crawl-jobs
+pip install crawl-any-website
 ```
 
 ### 2. Developer Editable Mode (Recommended)

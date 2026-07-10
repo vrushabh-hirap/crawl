@@ -1,4 +1,4 @@
-"""Main crawling interface for the crawl library.
+"""Main crawling interface for the crawl-any-website library.
 
 Provides the user-facing Crawl class for fetching web pages, and the Page
 wrapper class containing extraction, traversal, and cleanup methods.
@@ -13,6 +13,7 @@ import crawl.extractor as extractor
 import crawl.exporter as exporter
 from crawl.utils import get_default_headers, setup_logger
 
+# Initialize log channel
 logger = setup_logger(__name__)
 
 
@@ -42,7 +43,7 @@ class Page:
             selector: CSS selector string.
 
         Returns:
-            The first matching DOM Node, or None.
+            The first matching DOM Node, or None if no match is found.
         """
         return self.node.find(selector)
 
@@ -53,26 +54,26 @@ class Page:
             selector: CSS selector string.
 
         Returns:
-            List of matching DOM Nodes.
+            List of matching DOM Nodes in pre-order document sequence.
         """
         return self.node.find_all(selector)
 
     def get_text(self) -> str:
-        """Extracts all text content from the document."""
+        """Extracts all text content from the document (concatenates child text)."""
         return self.node.get_text()
 
     def inner_html(self) -> str:
-        """Returns the serialized inner HTML of the root document."""
+        """Returns the serialized inner HTML of the root document's children."""
         return self.node.inner_html()
 
     def outer_html(self) -> str:
         """Returns the serialized outer HTML of the root document."""
         return self.node.outer_html()
 
-    # Data extraction APIs
+    # --- Data Extraction Delegators ---
 
     def title(self) -> str:
-        """Returns the page title (falls back to first H1)."""
+        """Returns the page title (first <title> tag, falling back to first <h1>)."""
         return extractor.extract_title(self.node)
 
     def paragraphs(self) -> List[str]:
@@ -111,13 +112,13 @@ class Page:
         """Returns all headings (H1 through H6) in order of appearance."""
         return extractor.extract_headers(self.node)
 
-    # Cleaning and Normalization
+    # --- Cleaning and Normalization ---
 
     def clean(self) -> None:
         """Cleans the parsed DOM in-place (normalizes whitespace, decodes entities, trims empty tags)."""
         clean_dom(self.node)
 
-    # Exporting helper shortcuts
+    # --- Exporting helper shortcuts ---
 
     def export_json(self, filepath: str) -> None:
         """Helper to export all primary extracted data to a JSON file.
@@ -125,6 +126,7 @@ class Page:
         Args:
             filepath: Target file path.
         """
+        # Pack data elements
         data = {
             "title": self.title(),
             "headers": self.headers(),
@@ -133,6 +135,7 @@ class Page:
             "images": self.images(),
             "meta": self.meta_tags()
         }
+        # Run export using exporter module
         exporter.export_json(data, filepath)
 
     def __repr__(self) -> str:
@@ -166,10 +169,13 @@ class Crawl:
             obey_robots: Future expansion placeholder to respect robots.txt rules.
             plugins: Future expansion placeholder for engine middleware/plugins.
         """
+        # Load standard browsers default headers
         headers = get_default_headers()
+        # Merge custom user headers if provided
         if default_headers:
             headers.update(default_headers)
 
+        # Initialize Downloader client
         self.downloader = Downloader(default_headers=headers, timeout=timeout, verify_ssl=verify_ssl)
         self.rate_limit_delay = rate_limit_delay
         self.obey_robots = obey_robots
@@ -200,10 +206,10 @@ class Crawl:
         # Future extension: Rate limiting sleep here
         # Future extension: Robots.txt rules checking here
 
-        # 1. Download
+        # 1. Download HTML string content
         response = self.downloader.download(url, headers=headers, timeout=timeout)
 
-        # 2. Parse HTML text to DOM tree
+        # 2. Parse HTML text to a Node DOM tree
         root_node = parse_html(response.text)
 
         # 3. Construct and return Page wrapper

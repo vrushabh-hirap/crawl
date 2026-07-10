@@ -140,6 +140,9 @@ def parse_selector_path(selector_str: str) -> List[Tuple[str, str]]:
 def select_single_path(start_node: Node, selector_path: str) -> List[Node]:
     """Evaluates a single CSS selector path starting from a given node.
 
+    This breaks the selector path (e.g. 'div > span.highlight') into sequential steps,
+    processes each step one-by-one, and filters the list of candidate nodes accordingly.
+
     Args:
         start_node: The reference DOM Node.
         selector_path: Selector path string.
@@ -151,7 +154,7 @@ def select_single_path(start_node: Node, selector_path: str) -> List[Node]:
     if not steps:
         return []
 
-    # Initial candidate set for step 0 is all descendants of the starting node
+    # Initial candidate set for step 0 is all matching descendants of the starting node
     first_comb, first_part = steps[0]
     first_tag, first_id, first_classes = parse_selector_part(first_part)
 
@@ -160,27 +163,28 @@ def select_single_path(start_node: Node, selector_path: str) -> List[Node]:
         if matches_part(node, first_tag, first_id, first_classes)
     ]
 
-    # Evaluate remaining combinator steps
+    # Evaluate remaining combinator steps left-to-right
     for i in range(1, len(steps)):
         comb, part = steps[i]
         tag, id_, classes = parse_selector_part(part)
         new_candidates = []
 
         if comb == ">":
-            # Direct children only
+            # Direct child combinator: candidates must be direct children of the current matching nodes
             for cand in candidates:
                 for child in cand.children:
                     if matches_part(child, tag, id_, classes):
                         if child not in new_candidates:
                             new_candidates.append(child)
         else:
-            # Descendants
+            # Descendant combinator (space): candidates can be any sub-level descendant of current matching nodes
             for cand in candidates:
                 for desc in get_descendants(cand):
                     if matches_part(desc, tag, id_, classes):
                         if desc not in new_candidates:
                             new_candidates.append(desc)
 
+        # Update candidate set for the next selector step
         candidates = new_candidates
 
     return candidates
@@ -189,8 +193,8 @@ def select_single_path(start_node: Node, selector_path: str) -> List[Node]:
 def select(node: Node, selector_str: str) -> List[Node]:
     """Finds all element descendants matching the CSS selector.
 
-    Handles comma-separated alternate paths and returns unique matches
-    sorted in pre-order document sequence.
+    Handles comma-separated alternate paths (alternative selector lists)
+    and returns unique matches sorted in pre-order document sequence.
 
     Args:
         node: The reference DOM Node.
@@ -202,16 +206,19 @@ def select(node: Node, selector_str: str) -> List[Node]:
     if not selector_str.strip():
         raise InvalidSelector("Empty selector query")
 
+    # Split selector list by commas
     raw_paths = selector_str.split(",")
     paths = [p.strip() for p in raw_paths if p.strip()]
 
-    # If any path in raw_paths is empty, it indicates invalid comma placement (e.g. ', div' or 'div,')
+    # If the count of trimmed paths does not match the raw count, it means the user
+    # entered double commas or trailing commas (e.g. "div, , span" or "div,"), which is invalid CSS.
     if len(paths) != len(raw_paths) or not paths:
         raise InvalidSelector("CSS Selector query has invalid comma usage or is empty")
 
     all_results = []
     seen = set()
 
+    # Collect matches from all comma-separated selectors
     for path in paths:
         path_matches = select_single_path(node, path)
         for match in path_matches:
@@ -219,7 +226,8 @@ def select(node: Node, selector_str: str) -> List[Node]:
                 seen.add(match)
                 all_results.append(match)
 
-    # Sort results to guarantee exact pre-order document structure order
+    # Sort results to guarantee exact pre-order document sequence.
+    # This prevents results from being returned out-of-order when multiple queries merge.
     descendants = get_descendants(node)
     results_set = set(all_results)
     return [d for d in descendants if d in results_set]
