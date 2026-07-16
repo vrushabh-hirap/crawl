@@ -27,6 +27,9 @@ web = [
 where = ["."]
 include = ["crawl*"]
 
+[tool.setuptools.package-data]
+"crawl.jobs.web" = ["static/*.html"]
+
 [project.scripts]
 crawl-any-website = "crawl.cli:main"
 crawl = "crawl.cli:main"
