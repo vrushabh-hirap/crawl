@@ -12,16 +12,51 @@ from crawl.exceptions import CrawlError
 
 
 def main() -> None:
-    """Entry point for the crawl-any-website command-line application.
+    """Entry point for the crawl command-line application.
 
-    Parses CLI flags. If a target URL is supplied, crawls, cleans, and prints
-    metadata summaries directly to stdout.
+    Parses CLI flags. If 'webpage' is specified, launches the local job search UI.
+    Otherwise, treats arguments as a target URL to download, parse, and verify.
     """
+    import sys
+
+    # 1. Route to webpage server if requested
+    if len(sys.argv) > 1 and sys.argv[1] == "webpage":
+        parser = argparse.ArgumentParser(
+            description="crawl webpage: Start the local job-search Web UI server."
+        )
+        parser.add_argument(
+            "--host",
+            default="127.0.0.1",
+            help="Host address to bind the local web server to (default: 127.0.0.1)."
+        )
+        parser.add_argument(
+            "-p", "--port",
+            type=int,
+            default=8080,
+            help="Port to run the local web server on (default: 8080)."
+        )
+        parser.add_argument(
+            "--no-browser",
+            action="store_true",
+            help="Do not automatically open the web browser when starting the server."
+        )
+        
+        args = parser.parse_args(sys.argv[2:])
+        
+        try:
+            from crawl.jobs.web.server import run_server
+            run_server(host=args.host, port=args.port, no_browser=args.no_browser)
+        except ImportError as e:
+            print(f"\n[Error] {e}", file=sys.stderr)
+            sys.exit(1)
+        return
+
+    # 2. Legacy fallback behavior for URL parsing
     parser = argparse.ArgumentParser(
         description="crawl-any-website: A scratch-built HTML parser and web crawling engine."
     )
     
-    # 1. Define version option (-v / --version)
+    # Define version option (-v / --version)
     parser.add_argument(
         "-v", "--version",
         action="version",
@@ -29,7 +64,7 @@ def main() -> None:
         help="Show the package version and exit."
     )
     
-    # 2. Define positional URL argument
+    # Define positional URL argument
     parser.add_argument(
         "url",
         nargs="?",

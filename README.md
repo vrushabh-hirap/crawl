@@ -8,14 +8,15 @@ This engine does not wrap third-party libraries like BeautifulSoup, lxml, Scrapy
 
 ## Table of Contents
 1. [Installation](#installation)
-2. [Technical Architecture](#technical-architecture)
-3. [API Reference](#api-reference)
+2. [CLI & Web UI User Interface](#cli--web-ui-user-interface)
+3. [Technical Architecture](#technical-architecture)
+4. [API Reference](#api-reference)
    - [Crawl](#crawl)
    - [Page](#page)
    - [Node](#node)
    - [Response](#response)
    - [Exceptions](#exceptions)
-4. [Usage Recipes](#usage-recipes)
+5. [Usage Recipes](#usage-recipes)
    - [Recipe 1: Local HTML Parsing & CSS Querying](#recipe-1-local-html-parsing--css-querying)
    - [Recipe 2: Live Crawling with Redirect History](#recipe-2-live-crawling-with-redirect-history)
    - [Recipe 3: Extracting Tables & Forms](#recipe-3-extracting-tables--forms)
@@ -35,7 +36,7 @@ pip install crawl-any-website
 ### 2. Developer Editable Mode (Recommended)
 From the root directory of this repository, run:
 ```bash
-pip install -e .
+pip install -e ".[web]"
 ```
 
 ### 3. Standard Local Installation
@@ -47,6 +48,29 @@ pip install .
 ```bash
 pip install git+https://github.com/vrushabh-hirap/crawl.git
 ```
+
+---
+
+## CLI & Web UI User Interface
+
+Crawl includes a complete local CLI and web dashboard for executing distributed/multi-platform job searches.
+
+### Running the Web App Interface
+Start the local Flask server (which opens a beautifully styled neobrutalist browser dashboard at http://127.0.0.1:8080):
+```bash
+crawl webpage
+```
+To run on a specific port:
+```bash
+crawl webpage -p 9090
+```
+
+### Running via command-line
+Execute searches and get structured lists directly in your terminal:
+```bash
+crawl search --title "Software Engineer" --location "Bangalore" --mode remote
+```
+
 
 ---
 

@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crawl Job Search Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ═══════════════════════════════════════════════════════
+           NEOBRUTALISM DESIGN SYSTEM
+           Rules: thick black borders · hard offset shadows ·
+                  flat saturated palette · sharp corners ·
+                  tactile press interactions · zero blur
+        ═══════════════════════════════════════════════════════ */
+
+        :root {
+            /* ── Palette ── */
+            --nb-bg:      #FFFCF5;   /* warm off-white page */
+            --nb-surface: #F0EBD8;   /* panel / search area */
+            --nb-card:    #FFFFFF;
+            --nb-black:   #111111;
+            --nb-white:   #FFFFFF;
+
+            /* Three flat accent colors */
+            --nb-yellow:  #FFDE59;   /* primary CTA */
+            --nb-orange:  #FF6B35;   /* secondary accent */
+            --nb-teal:    #00C2CB;   /* tertiary / links */
+            --nb-mint:    #C8F5E4;   /* light tag fill */
+
+            /* Text */
+            --nb-text:    #111111;
+            --nb-muted:   #555555;
+
+            /* ── Borders (no blur, no softness) ── */
+            --border:      3px solid #111111;
+            --border-thin: 2px solid #111111;
+
+            /* ── Shadows (no blur radius — ever) ── */
+            --shadow-sm:     3px 3px 0 #111111;
+            --shadow:        4px 4px 0 #111111;
+            --shadow-lg:     6px 6px 0 #111111;
+            --shadow-press:  2px 2px 0 #111111;
+
+            /* ── Typography ── */
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+            --font-mono:    'DM Mono', monospace;
+
+            /* ── Corners (sharp — max 6px) ── */
+            --radius:    4px;
+            --radius-sm: 2px;
+        }
+
+        /* ── RESET ── */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ── BASE ── */
+        body {
+            background-color: var(--nb-bg);
+            color: var(--nb-text);
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 5rem;
+            /* Subtle dot-grid background — neobrutalist paper feel */
+            background-image: radial-gradient(circle, #c8c0a0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3.5rem 1.5rem 2rem;
+        }
+
+        /* ═══════════════════════════════
+           HEADER
+        ═══════════════════════════════ */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.25rem;
+            border-bottom: var(--border);
+        }
+
+        .logo-section h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--nb-text);
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        /* Yellow underline block on the title */
+        .logo-section h1 span,
+        .logo-section h1 {
+            position: relative;
+        }
+        .logo-section h1::after {
+            content: '';
+            display: block;
+            height: 5px;
+            background: var(--nb-yellow);
+            border-top: 2px solid var(--nb-black);
+            margin-top: 4px;
+        }
+
+        .logo-section p {
+            color: var(--nb-muted);
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            margin-top: 0.4rem;
+            letter-spacing: 0.01em;
+        }
+
+        /* ── Badge ── */
+        .badge {
+            background: var(--nb-yellow);
+            border: var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            color: var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            padding: 0.3rem 0.75rem;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════
+           SEARCH PANEL
+        ═══════════════════════════════ */
+        .search-panel {
+            background: var(--nb-surface);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--nb-text);
+        }
+
+        /* ── Inputs ── */
+        .input-control {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            color: var(--nb-text);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.7rem 0.9rem;
+            width: 100%;
+            outline: none;
+            transition: box-shadow 0.12s ease, transform 0.12s ease;
+        }
+        .input-control:focus {
+            background: #FFFDE8;
+            box-shadow: var(--shadow);
+            transform: translate(-1px, -1px);
+        }
+        .input-control:hover:not(:focus) {
+            box-shadow: var(--shadow);
+        }
+
+        /* ── Chips ── */
+        .chips-container {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 0.45rem 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            min-height: 2.75rem;
+            align-items: center;
+            transition: box-shadow 0.12s ease, transform 0.12s ease;
+        }
+        .chips-container:focus-within {
+            background: #FFFDE8;
+            box-shadow: var(--shadow);
+            transform: translate(-1px, -1px);
+        }
+
+        .chip {
+            background: var(--nb-yellow);
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            color: var(--nb-black);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 0.2rem 0.55rem;
+        }
+        .chip-remove {
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--nb-black);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 2px;
+        }
+        .chip-remove:hover { background: var(--nb-orange); }
+
+        .chips-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--nb-text);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            flex: 1;
+            min-width: 100px;
+            padding: 0.2rem;
+        }
+
+        /* ═══════════════════════════════
+           WORK MODE TOGGLES
+        ═══════════════════════════════ */
+        .work-mode-group { margin-bottom: 1.25rem; }
+
+        .work-mode-options {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .work-mode-checkbox { display: none; }
+
+        .work-mode-label {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 0.45rem 1.1rem;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--nb-text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            user-select: none;
+            transition: box-shadow 0.1s ease, transform 0.1s ease;
+        }
+        .work-mode-label:hover {
+            box-shadow: var(--shadow);
+            transform: translate(-1px, -1px);
+        }
+        .work-mode-checkbox:checked + .work-mode-label {
+            background: var(--nb-teal);
+            border-color: var(--nb-black);
+            box-shadow: var(--shadow-sm);
+            color: var(--nb-black);
+            transform: translate(0);
+        }
+        .work-mode-checkbox:focus-visible + .work-mode-label {
+            outline: 3px solid var(--nb-orange);
+            outline-offset: 2px;
+        }
+
+        /* ═══════════════════════════════
+           SEARCH BUTTON  ← signature CTA
+        ═══════════════════════════════ */
+        .btn-search {
+            background: var(--nb-yellow);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            color: var(--nb-black);
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: fit-content;
+            transition: box-shadow 0.1s ease, transform 0.1s ease;
+        }
+        /* Hover — lift up and extend shadow */
+        .btn-search:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translate(-2px, -2px);
+        }
+        /* Active — press down effect */
+        .btn-search:active {
+            box-shadow: var(--shadow-press);
+            transform: translate(2px, 2px);
+        }
+        .btn-search:focus-visible {
+            outline: 3px solid var(--nb-orange);
+            outline-offset: 3px;
+        }
+        .btn-search:disabled {
+            background: #D5D0C0;
+            border-color: #888;
+            box-shadow: 3px 3px 0 #888;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ── Spinner ── */
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(0,0,0,0.2);
+            border-top-color: var(--nb-black);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ═══════════════════════════════
+           WARNING BANNER
+        ═══════════════════════════════ */
+        .warning-banner {
+            display: none;
+            background: #FFF3CD;
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            color: var(--nb-black);
+            font-size: 0.875rem;
+        }
+        .warning-banner h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .warning-banner ul {
+            padding-left: 1.25rem;
+            margin-top: 0.4rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        /* ═══════════════════════════════
+           RESULTS INFO BAR
+        ═══════════════════════════════ */
+        .results-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .results-info.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .results-count {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--nb-text);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* ═══════════════════════════════
+           RESULTS GRID
+        ═══════════════════════════════ */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        /* ═══════════════════════════════
+           JOB CARD  ← signature element
+        ═══════════════════════════════ */
+        .job-card {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            gap: 1.1rem;
+            align-items: flex-start;
+            position: relative;
+            transition: box-shadow 0.1s ease, transform 0.1s ease;
+            /* Yellow left accent strip */
+            border-left: 6px solid var(--nb-yellow);
+        }
+        .job-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translate(-2px, -2px);
+        }
+        .job-card:focus-within {
+            outline: 3px solid var(--nb-teal);
+            outline-offset: 2px;
+        }
+
+        /* Company initial avatar — square, bold, flat */
+        .company-logo-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius);
+            border: var(--border);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--nb-black);
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+
+        .job-card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .job-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .job-title-row h3 {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--nb-text);
+            margin-bottom: 0.15rem;
+            line-height: 1.25;
+        }
+        .company-name {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--nb-muted);
+        }
+        .job-details-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            color: var(--nb-muted);
+            font-size: 0.82rem;
+            margin-top: 0.1rem;
+            font-family: var(--font-mono);
+        }
+        .detail-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* ── Work Mode Tags ── */
+        .tag {
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            padding: 0.1rem 0.5rem;
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+        }
+        .tag-remote  { background: var(--nb-teal);   color: var(--nb-black); }
+        .tag-hybrid  { background: var(--nb-orange);  color: var(--nb-white); }
+        .tag-onsite  { background: var(--nb-mint);    color: var(--nb-black); }
+
+        /* ── Source Badges ── */
+        .source-badge {
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            box-shadow: 2px 2px 0 var(--nb-black);
+            font-family: var(--font-display);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 0.2rem 0.55rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--nb-black);
+        }
+        .source-linkedin { background: #BEDEFF; border-color: var(--nb-black); }
+        .source-indeed   { background: var(--nb-mint); border-color: var(--nb-black); }
+        .source-naukri   { background: #FECDAA; border-color: var(--nb-black); }
+
+        /* ── Apply / View Listing button ── */
+        .btn-apply {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            color: var(--nb-black);
+            cursor: pointer;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.45rem 0.9rem;
+            text-decoration: none;
+            text-align: center;
+            align-self: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: box-shadow 0.1s ease, transform 0.1s ease, background 0.1s ease;
+        }
+        .btn-apply:hover {
+            background: var(--nb-teal);
+            box-shadow: var(--shadow);
+            transform: translate(-1px, -1px);
+        }
+        .btn-apply:active {
+            box-shadow: var(--shadow-press);
+            transform: translate(1px, 1px);
+        }
+        .btn-apply:focus-visible {
+            outline: 3px solid var(--nb-orange);
+            outline-offset: 2px;
+        }
+
+        /* ═══════════════════════════════
+           SKELETON LOADERS
+        ═══════════════════════════════ */
+        .skeleton-card {
+            background: var(--nb-card);
+            border: var(--border);
+            border-left: 6px solid #D5D0C0;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            gap: 1.1rem;
+            pointer-events: none;
+        }
+        .skeleton-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: var(--radius);
+            border: var(--border);
+            background: #E8E4D8;
+            animation: shimmer 1.4s infinite;
+            flex-shrink: 0;
+        }
+        .skeleton-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .skeleton-title {
+            height: 15px;
+            width: 38%;
+            background: #E8E4D8;
+            border-radius: var(--radius-sm);
+            animation: shimmer 1.4s infinite;
+        }
+        .skeleton-subtitle {
+            height: 12px;
+            width: 20%;
+            background: #E0DCD0;
+            border-radius: var(--radius-sm);
+            animation: shimmer 1.4s infinite 0.15s;
+        }
+        .skeleton-text {
+            height: 11px;
+            width: 60%;
+            background: #D8D4C8;
+            border-radius: var(--radius-sm);
+            animation: shimmer 1.4s infinite 0.3s;
+        }
+        @keyframes shimmer {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* ── Utility ── */
+        .hidden { display: none !important; }
+
+        /* ═══════════════════════════════
+           EMPTY STATE
+        ═══════════════════════════════ */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--nb-card);
+            border: 3px dashed var(--nb-black);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--nb-text);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.6rem;
+        }
+        .empty-state p {
+            color: var(--nb-muted);
+            font-size: 0.9rem;
+            max-width: 400px;
+            margin: 0 auto;
+            font-family: var(--font-mono);
+        }
+
+        /* ═══════════════════════════════
+           RESPONSIVE — mobile
+           Scale shadows/borders down,
+           never remove them entirely
+        ═══════════════════════════════ */
+        @media (max-width: 480px) {
+            :root {
+                --shadow:        3px 3px 0 #111111;
+                --shadow-lg:     4px 4px 0 #111111;
+                --shadow-press:  1px 1px 0 #111111;
+                --shadow-sm:     2px 2px 0 #111111;
+            }
+            .logo-section h1 { font-size: 1.5rem; }
+            .search-panel { padding: 1.25rem; }
+            .job-card { flex-wrap: wrap; padding: 1rem; }
+            .btn-apply { align-self: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo-section">
+                <h1>Crawl Jobs</h1>
+                <p>Distributed job search scraper running completely locally</p>
+            </div>
+            <span class="badge">V1.0.0 ENGINE</span>
+        </header>
+
+        <!-- Search Config Panel -->
+        <div class="search-panel">
+            <form id="searchForm" onsubmit="executeSearch(event)">
+                <div class="form-grid">
+                    <!-- Job Title -->
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title / Role</label>
+                        <input type="text" id="jobTitle" class="input-control" placeholder="e.g. Software Engineer, React Developer" required>
+                    </div>
+                    <!-- Location -->
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" class="input-control" placeholder="e.g. New York, San Francisco, Remote">
+                    </div>
+                    <!-- Recency -->
+                    <div class="form-group">
+                        <label for="recency">Date Posted</label>
+                        <select id="recency" class="input-control">
+                            <option value="all">Anytime</option>
+                            <option value="24h">Past 24 hours</option>
+                            <option value="week">Past Week</option>
+                            <option value="month">Past Month</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Skills tags input -->
+                <div class="form-grid" style="grid-template-columns: 1fr; margin-bottom: 1.5rem;">
+                    <div class="form-group">
+                        <label>Preferred Skills / Keywords (Press Enter to add)</label>
+                        <div class="chips-container" id="chipsContainer">
+                            <input type="text" class="chips-input" id="skillsInput" placeholder="Type skill & press Enter...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Mode checkboxes -->
+                <div class="work-mode-group">
+                    <label style="display:block; font-size:0.85rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem;">Work Mode</label>
+                    <div class="work-mode-options">
+                        <input type="checkbox" id="modeRemote" class="work-mode-checkbox" value="Remote" checked>
+                        <label for="modeRemote" class="work-mode-label">Remote</label>
+
+                        <input type="checkbox" id="modeHybrid" class="work-mode-checkbox" value="Hybrid">
+                        <label for="modeHybrid" class="work-mode-label">Hybrid</label>
+
+                        <input type="checkbox" id="modeOnsite" class="work-mode-checkbox" value="On-site">
+                        <label for="modeOnsite" class="work-mode-label">On-site</label>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="submit" class="btn-search" id="btnSearch">
+                    <div class="spinner" id="btnSpinner"></div>
+                    <span>Search Jobs</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Warning / Error notifications -->
+        <div class="warning-banner" id="warningBanner">
+            <h4 id="warningHeader">⚠️ Query Warning</h4>
+            <ul id="warningList"></ul>
+        </div>
+
+        <!-- Results Info -->
+        <div class="results-info" id="resultsInfo">
+            <div class="results-count" id="resultsCount">Found 0 job listings</div>
+            <div class="results-source-toggles">
+                <span class="detail-item" style="font-size:0.85rem; color:var(--text-muted);">Sources: LinkedIn, Indeed, Naukri</span>
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-grid" id="resultsGrid">
+            <!-- Initial Empty State -->
+            <div class="empty-state" id="initialEmptyState">
+                <h3>No Search Performed Yet</h3>
+                <p>Fill out the role, location, and parameters above to start fetching jobs in parallel across multiple portals.</p>
+            </div>
+        </div>
+
+        <!-- Loading Template -->
+        <div class="results-grid hidden" id="loadingState">
+            <div class="skeleton-card">
+                <div class="skeleton-logo"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-subtitle"></div>
+                    <div class="skeleton-text"></div>
+                </div>
+            </div>
+            <div class="skeleton-card">
+                <div class="skeleton-logo"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-subtitle"></div>
+                    <div class="skeleton-text"></div>
+                </div>
+            </div>
+            <div class="skeleton-card">
+                <div class="skeleton-logo"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-subtitle"></div>
+                    <div class="skeleton-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Skills Chips Logic
+        const skillsInput = document.getElementById('skillsInput');
+        const chipsContainer = document.getElementById('chipsContainer');
+        const skillsList = new Set();
+
+        skillsInput.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ',') {
+                event.preventDefault();
+                const val = skillsInput.value.trim().replace(/,/g, '');
+                if (val && !skillsList.has(val.toLowerCase())) {
+                    addSkillChip(val);
+                }
+                skillsInput.value = '';
+            }
+        });
+
+        function addSkillChip(name) {
+            skillsList.add(name.toLowerCase());
+            
+            const chip = document.createElement('div');
+            chip.className = 'chip';
+            chip.dataset.skill = name.toLowerCase();
+            chip.innerHTML = `
+                <span>${name}</span>
+                <span class="chip-remove" onclick="removeSkillChip('${name.toLowerCase()}')">&times;</span>
+            `;
+            
+            chipsContainer.insertBefore(chip, skillsInput);
+        }
+
+        function removeSkillChip(name) {
+            skillsList.delete(name);
+            const chip = chipsContainer.querySelector(`.chip[data-skill="${name}"]`);
+            if (chip) {
+                chipsContainer.removeChild(chip);
+            }
+        }
+
+        // Search Executor API call
+        async function executeSearch(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('jobTitle').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const recency = document.getElementById('recency').value;
+            
+            // Gather work modes
+            const workModes = [];
+            if (document.getElementById('modeRemote').checked) workModes.push('Remote');
+            if (document.getElementById('modeHybrid').checked) workModes.push('Hybrid');
+            if (document.getElementById('modeOnsite').checked) workModes.push('On-site');
+            
+            const skills = Array.from(skillsList);
+
+            // UI Elements
+            const btnSearch = document.getElementById('btnSearch');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const loadingState = document.getElementById('loadingState');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const resultsInfo = document.getElementById('resultsInfo');
+            const resultsCount = document.getElementById('resultsCount');
+            const warningBanner = document.getElementById('warningBanner');
+            const warningList = document.getElementById('warningList');
+
+            // Set loading state
+            btnSearch.disabled = true;
+            btnSpinner.style.display = 'block';
+            loadingState.classList.remove('hidden');
+            resultsGrid.innerHTML = '';
+            resultsInfo.classList.remove('show');
+            warningBanner.style.display = 'none';
+            warningList.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title,
+                        location,
+                        recency,
+                        work_modes: workModes,
+                        skills
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Hide loading state
+                loadingState.classList.add('hidden');
+                btnSearch.disabled = false;
+                btnSpinner.style.display = 'none';
+
+                if (data.success) {
+                    // Populate results
+                    renderResults(data.results);
+                    
+                    // Show count
+                    resultsCount.textContent = `Found ${data.results.length} job listing${data.results.length === 1 ? '' : 's'} across sources`;
+                    resultsInfo.classList.add('show');
+
+                    // Populate Warnings
+                    if (data.warnings && data.warnings.length > 0) {
+                        warningBanner.style.display = 'block';
+                        data.warnings.forEach(w => {
+                            const li = document.createElement('li');
+                            li.textContent = w;
+                            warningList.appendChild(li);
+                        });
+                    }
+                } else {
+                    showError(data.error || 'Server returned an error.');
+                }
+            } catch (err) {
+                loadingState.classList.add('hidden');
+                btnSearch.disabled = false;
+                btnSpinner.style.display = 'none';
+                showError('Network error connecting to search API server.');
+                console.error(err);
+            }
+        }
+
+        // Render Results Grid Cards
+        function renderResults(results) {
+            const grid = document.getElementById('resultsGrid');
+            grid.innerHTML = '';
+
+            if (!results || results.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Job Matches Found</h3>
+                        <p>Try expanding your search constraints, modifying keywords, or widening the location filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Colors for company avatars
+            // Retro-futurism avatar palette — warm, era-accurate
+            const avatarColors = [
+                '#2A7F7F', '#C8700A', '#3A6F8A', '#8A4E06',
+                '#5B7FA6', '#7F5A2A', '#2A6060', '#A0522D'
+            ];
+
+            results.forEach(job => {
+                const char = job.company ? job.company.charAt(0) : 'J';
+                // Hash company name to pick a stable color index
+                let hash = 0;
+                for (let i = 0; i < job.company.length; i++) {
+                    hash = job.company.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                const color = avatarColors[Math.abs(hash) % avatarColors.length];
+
+                // Source badge class
+                const srcClass = `source-${job.source.toLowerCase().replace(/\./g, '')}`;
+
+                // Work mode tag class
+                let modeClass = 'tag-onsite';
+                if (job.work_mode.toLowerCase() === 'remote') modeClass = 'tag-remote';
+                else if (job.work_mode.toLowerCase() === 'hybrid') modeClass = 'tag-hybrid';
+
+                const card = document.createElement('div');
+                card.className = 'job-card';
+                card.innerHTML = `
+                    <div class="company-logo-avatar" style="background-color: ${color}">
+                        ${char}
+                    </div>
+                    <div class="job-card-content">
+                        <div class="job-header">
+                            <div class="job-title-row">
+                                <h3>${escapeHtml(job.title)}</h3>
+                                <span class="company-name">${escapeHtml(job.company)}</span>
+                            </div>
+                            <span class="source-badge ${srcClass}">${escapeHtml(job.source)}</span>
+                        </div>
+                        <div class="job-details-row">
+                            <div class="detail-item">
+                                📍 ${escapeHtml(job.location)}
+                            </div>
+                            <div class="detail-item">
+                                🕒 ${escapeHtml(job.posting_date)}
+                            </div>
+                            <span class="tag ${modeClass}">${escapeHtml(job.work_mode)}</span>
+                        </div>
+                    </div>
+                    <a href="${job.link}" target="_blank" class="btn-apply">View Listing</a>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showError(msg) {
+            const grid = document.getElementById('resultsGrid');
+            grid.innerHTML = `
+                <div class="empty-state" style="border-color: rgba(239, 68, 68, 0.2)">
+                    <h3 style="color: var(--danger)">Search Engine Failure</h3>
+                    <p style="margin-top: 0.5rem;">${escapeHtml(msg)}</p>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.innerText = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
