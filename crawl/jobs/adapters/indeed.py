@@ -180,11 +180,11 @@ class IndeedAdapter(BaseJobAdapter):
             logger.error(f"Unexpected error in Indeed adapter: {e}")
             warning_msg = f"Unexpected error: {str(e)}"
 
-        # Fallback: links point to the real Indeed search for these terms
-        if warning_msg and not results:
-            logger.info("Serving mock fallback data for Indeed.")
-            results = self._get_mock_data(query, url)
-            warning_msg = f"Indeed: {warning_msg} (Showing mock results for demo)"
+        # When Indeed is blocked or returns no cards, return an empty list.
+        # RemoteOK and Jobicy supply real jobs with direct links — no fake
+        # cards with search-page URLs should pollute the results.
+        if warning_msg:
+            warning_msg = f"Indeed: {warning_msg}"
             self.last_warning = warning_msg
         else:
             self.last_warning = None

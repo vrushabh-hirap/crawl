@@ -68,9 +68,10 @@ class TestJobSearch(unittest.TestCase):
         results, warnings = engine.search(query)
         
         self.assertTrue(len(results) > 0)
+        valid_sources = {"LinkedIn", "Indeed", "Naukri", "RemoteOK", "Jobicy"}
         for r in results:
             self.assertIsInstance(r, JobResult)
-            self.assertIn(r.source, ["LinkedIn", "Indeed", "Naukri"])
+            self.assertIn(r.source, valid_sources)
             self.assertTrue(len(r.title) > 0)
             self.assertTrue(len(r.company) > 0)
             self.assertTrue(len(r.link) > 0)

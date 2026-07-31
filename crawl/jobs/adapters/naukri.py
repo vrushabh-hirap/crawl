@@ -209,11 +209,11 @@ class NaukriAdapter(BaseJobAdapter):
             logger.error(f"Unexpected error in Naukri adapter: {e}")
             warning_msg = f"Unexpected error: {str(e)}"
 
-        # Fallback: links point to the real Naukri search page
-        if warning_msg and not results:
-            logger.info("Serving mock fallback data for Naukri.")
-            results = self._get_mock_data(query, search_url)
-            warning_msg = f"Naukri: {warning_msg} (Showing mock results for demo)"
+        # When Naukri fails or returns 0 jobs, return an empty list.
+        # RemoteOK and Jobicy supply real jobs with direct links — no fake
+        # cards with search-page URLs should pollute the results.
+        if warning_msg:
+            warning_msg = f"Naukri: {warning_msg}"
             self.last_warning = warning_msg
         else:
             self.last_warning = None

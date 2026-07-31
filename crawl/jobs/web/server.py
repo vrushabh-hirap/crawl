@@ -15,6 +15,7 @@ except ImportError:
 
 from crawl.jobs.models import JobQuery
 from crawl.jobs.engine import JobSearchEngine
+from crawl.jobs.ats.analyzer import ATSAnalyzer
 from crawl.utils import setup_logger
 
 logger = setup_logger(__name__)
@@ -27,6 +28,9 @@ app = Flask(__name__, static_folder=static_dir, static_url_path="")
 
 # Instance of concurrent job search orchestrator
 search_engine = JobSearchEngine()
+
+# Instance of ATS résumé analyzer
+ats_analyzer = ATSAnalyzer()
 
 @app.route("/")
 def index() -> Any:
@@ -68,6 +72,45 @@ def api_search() -> Any:
             "success": False,
             "error": str(e)
         }), 500
+
+
+@app.route("/api/ats/analyze", methods=["POST"])
+def api_ats_analyze() -> Any:
+    """ATS résumé analysis endpoint.
+
+    Accepts multipart/form-data with:
+      - ``resume``          (file)   — PDF, DOCX, or TXT résumé
+      - ``job_description`` (string) — raw job description text
+    """
+    try:
+        # ── Validate file upload ──────────────────────────────────────────
+        if "resume" not in request.files:
+            return jsonify({"success": False, "error": "No résumé file provided."}), 400
+
+        resume_file = request.files["resume"]
+        if not resume_file.filename:
+            return jsonify({"success": False, "error": "Résumé file has no filename."}), 400
+
+        job_description = (request.form.get("job_description") or "").strip()
+        if not job_description:
+            return jsonify({"success": False, "error": "Job description cannot be empty."}), 400
+
+        file_bytes = resume_file.read()
+        filename   = resume_file.filename
+
+        logger.info(f"ATS analysis request: file={filename!r}, jd_len={len(job_description)}")
+
+        # ── Run analysis ──────────────────────────────────────────────────
+        report = ats_analyzer.analyze(file_bytes, filename, job_description)
+
+        return jsonify({"success": True, "report": report})
+
+    except ValueError as e:
+        logger.warning(f"ATS validation error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        logger.exception("Unexpected error during ATS analysis")
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 def run_server(host: str, port: int, no_browser: bool) -> None:

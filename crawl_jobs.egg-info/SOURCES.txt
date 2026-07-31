@@ -21,9 +21,17 @@ crawl/jobs/models.py
 crawl/jobs/adapters/__init__.py
 crawl/jobs/adapters/base.py
 crawl/jobs/adapters/indeed.py
+crawl/jobs/adapters/jobicy.py
 crawl/jobs/adapters/linkedin.py
 crawl/jobs/adapters/naukri.py
+crawl/jobs/adapters/remoteok.py
+crawl/jobs/ats/__init__.py
+crawl/jobs/ats/analyzer.py
+crawl/jobs/ats/parser.py
+crawl/jobs/ats/reporter.py
+crawl/jobs/ats/scorer.py
 crawl/jobs/web/server.py
+crawl/jobs/web/static/index.html
 crawl_jobs.egg-info/PKG-INFO
 crawl_jobs.egg-info/SOURCES.txt
 crawl_jobs.egg-info/dependency_links.txt

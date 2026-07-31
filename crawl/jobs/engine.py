@@ -3,20 +3,29 @@
 import concurrent.futures
 from typing import List, Tuple
 from crawl.jobs.models import JobQuery, JobResult
-from crawl.jobs.adapters import LinkedInAdapter, IndeedAdapter, NaukriAdapter
+from crawl.jobs.adapters import (
+    LinkedInAdapter,
+    IndeedAdapter,
+    NaukriAdapter,
+    RemoteOKAdapter,
+    JobicyAdapter,
+)
 from crawl.utils import setup_logger
-
 logger = setup_logger(__name__)
 
 class JobSearchEngine:
     """Coordinates search across multiple job site adapters concurrently."""
 
     def __init__(self) -> None:
-        # Register standard adapters
+        # Register all adapters.
+        # RemoteOK and Jobicy use free, open APIs that always return real job
+        # listings with direct individual job URLs — no mock fallback needed.
         self.adapters = [
             LinkedInAdapter(),
             IndeedAdapter(),
-            NaukriAdapter()
+            NaukriAdapter(),
+            RemoteOKAdapter(),
+            JobicyAdapter(),
         ]
 
     def search(self, query: JobQuery) -> Tuple[List[JobResult], List[str]]:

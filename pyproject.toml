@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "crawl-jobs"
-version = "1.0.0"
+version = "1.1.0"
 description = "A production-quality web crawling and HTML parsing engine built completely from scratch."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -16,6 +16,10 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+]
+dependencies = [
+    "pypdf>=3.0.0",
+    "python-docx>=0.8.11",
 ]
 
 [project.optional-dependencies]

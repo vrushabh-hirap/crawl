@@ -5,4 +5,4 @@ is imported by the top-level package namespace, the setup configurations, and th
 CLI utility to ensure a single source of truth for version metadata.
 """
 
-__version__ = "0.1.2"
+__version__ = "1.1.0"

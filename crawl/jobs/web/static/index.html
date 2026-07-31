@@ -551,6 +551,8 @@
         .source-linkedin { background: #BEDEFF; border-color: var(--nb-black); }
         .source-indeed   { background: var(--nb-mint); border-color: var(--nb-black); }
         .source-naukri   { background: #FECDAA; border-color: var(--nb-black); }
+        .source-remoteok { background: #C8F5C8; border-color: var(--nb-black); }
+        .source-jobicy   { background: #E8D5FF; border-color: var(--nb-black); }
 
         /* ── Apply / View Listing button ── */
         .btn-apply {
@@ -691,6 +693,384 @@
             .job-card { flex-wrap: wrap; padding: 1rem; }
             .btn-apply { align-self: flex-start; }
         }
+
+        /* ════════════════════════════════
+           ATS — TAB NAV
+        ════════════════════════════════ */
+        .tab-nav {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2rem;
+            border: var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            width: fit-content;
+        }
+        .tab-btn {
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-right: var(--border);
+            cursor: pointer;
+            background: var(--nb-white);
+            color: var(--nb-muted);
+            transition: background 0.1s, transform 0.1s, box-shadow 0.1s;
+        }
+        .tab-btn:last-child { border-right: none; }
+        .tab-btn:hover {
+            background: var(--nb-surface);
+            color: var(--nb-text);
+        }
+        .tab-btn.active {
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            box-shadow: inset 0 -3px 0 var(--nb-black);
+        }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; }
+
+        /* ════════════════════════════════
+           ATS — UPLOAD ZONE
+        ════════════════════════════════ */
+        .ats-panel {
+            background: var(--nb-surface);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        .ats-panel-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .ats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 768px) { .ats-grid { grid-template-columns: 1fr; } }
+        .drop-zone {
+            background: var(--nb-card);
+            border: 3px dashed #111111;
+            border-radius: var(--radius);
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.15s, transform 0.12s, box-shadow 0.12s;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            min-height: 180px;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            background: #FFFDE8;
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow);
+        }
+        .drop-zone-icon { font-size: 2.5rem; line-height: 1; }
+        .drop-zone-label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .drop-zone-hint {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--nb-muted);
+        }
+        .drop-zone-filename {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--nb-orange);
+            margin-top: 0.25rem;
+            word-break: break-all;
+        }
+        #atsResumeInput { display: none; }
+        .ats-jd-label {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+        .ats-jd-textarea {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            color: var(--nb-text);
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            padding: 0.9rem;
+            width: 100%;
+            height: 180px;
+            resize: vertical;
+            outline: none;
+            transition: box-shadow 0.12s ease, transform 0.12s ease;
+        }
+        .ats-jd-textarea:focus {
+            background: #FFFDE8;
+            box-shadow: var(--shadow);
+            transform: translate(-1px, -1px);
+        }
+        .btn-ats {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.85rem 2rem;
+            background: var(--nb-teal);
+            color: var(--nb-black);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn-ats:hover  { transform: translate(-2px, -2px); box-shadow: var(--shadow-lg); }
+        .btn-ats:active { transform: translate(1px,  1px);  box-shadow: var(--shadow-press); }
+        .btn-ats:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .ats-spinner {
+            width: 14px; height: 14px;
+            border: 2px solid rgba(0,0,0,0.25);
+            border-top-color: var(--nb-black);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        /* ════════════════════════════════
+           ATS — REPORT PANEL
+        ════════════════════════════════ */
+        .ats-report {
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .ats-report.show { display: flex; }
+        /* Score hero */
+        .ats-score-hero {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .ats-score-ring-wrap { position: relative; flex-shrink: 0; }
+        .ats-score-ring {
+            width: 130px; height: 130px;
+            transform: rotate(-90deg);
+        }
+        .ats-score-ring circle { fill: none; }
+        .ats-score-ring .ring-bg {
+            stroke: #E8E0CC;
+            stroke-width: 14;
+        }
+        .ats-score-ring .ring-fill {
+            stroke: var(--nb-teal);
+            stroke-width: 14;
+            stroke-linecap: square;
+            stroke-dasharray: 339.29;
+            stroke-dashoffset: 339.29;
+            transition: stroke-dashoffset 1.1s ease, stroke 0.5s;
+        }
+        .ats-score-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+        .ats-score-number {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--nb-black);
+        }
+        .ats-score-label {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--nb-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .ats-grade-badge {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--nb-yellow);
+            border: var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            width: 68px; height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .ats-hero-meta { flex: 1; min-width: 180px; }
+        .ats-hero-meta h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .ats-breakdown-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .ats-breakdown-pill {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            padding: 0.25rem 0.7rem;
+            border: var(--border-thin);
+            border-radius: 2px;
+            background: var(--nb-surface);
+        }
+        /* Report cards */
+        .ats-cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        @media (max-width: 768px) { .ats-cards-grid { grid-template-columns: 1fr; } }
+        .ats-card {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem 1.5rem;
+        }
+        .ats-card-title {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        /* Keyword chips */
+        .kw-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .kw-chip {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            padding: 0.2rem 0.6rem;
+            border: var(--border-thin);
+            border-radius: 2px;
+        }
+        .kw-chip.matched { background: #C8F5E4; }
+        .kw-chip.missing { background: #FFE0D8; }
+        /* Section checklist */
+        .section-list { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
+        .section-item {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-item .tick  { color: #22c55e; font-weight: 700; }
+        .section-item .cross { color: #ef4444; font-weight: 700; }
+        /* Contact row */
+        .contact-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 0.25rem;
+        }
+        .contact-pill {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            padding: 0.3rem 0.8rem;
+            border: var(--border-thin);
+            border-radius: 2px;
+        }
+        .contact-pill.ok  { background: #C8F5E4; }
+        .contact-pill.bad { background: #FFE0D8; opacity: 0.7; text-decoration: line-through; }
+        /* Recommendations */
+        .ats-recs-card {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow));
+            padding: 1.25rem 1.5rem;
+        }
+        .ats-rec-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            margin-top: 0.25rem;
+        }
+        .ats-rec-item {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .ats-rec-num {
+            font-family: var(--font-display);
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--nb-yellow);
+            border: var(--border-thin);
+            border-radius: 2px;
+            padding: 0.1rem 0.45rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .ats-error-msg {
+            background: #FFE0D8;
+            border: var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            display: none;
+        }
+        .ats-error-msg.show { display: block; }
     </style>
 </head>
 <body>
@@ -703,6 +1083,15 @@
             </div>
             <span class="badge">V1.0.0 ENGINE</span>
         </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav" role="tablist" aria-label="Application sections">
+            <button class="tab-btn active" id="tabJobSearch" role="tab" aria-selected="true"  aria-controls="job-search-section" onclick="switchTab('job-search')">&#128269; Job Search</button>
+            <button class="tab-btn"          id="tabATS"       role="tab" aria-selected="false" aria-controls="ats-section"        onclick="switchTab('ats')">&#128196; ATS Analyser</button>
+        </nav>
+
+        <!-- ═══ TAB: JOB SEARCH ═══ -->
+        <div id="job-search-section" class="tab-section active">
 
         <!-- Search Config Panel -->
         <div class="search-panel">
@@ -773,7 +1162,7 @@
         <div class="results-info" id="resultsInfo">
             <div class="results-count" id="resultsCount">Found 0 job listings</div>
             <div class="results-source-toggles">
-                <span class="detail-item" style="font-size:0.85rem; color:var(--text-muted);">Sources: LinkedIn, Indeed, Naukri</span>
+                <span class="detail-item" id="sourcesLabel" style="font-size:0.85rem; color:var(--nb-muted); font-family:var(--font-mono);">Sources: —</span>
             </div>
         </div>
 
@@ -813,7 +1202,102 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+        <!-- /.tab-section #job-search-section -->
+
+        <!-- ═══ TAB: ATS ANALYSER ═══ -->
+        <div id="ats-section" class="tab-section">
+
+            <!-- Upload Panel -->
+            <div class="ats-panel">
+                <div class="ats-panel-title">&#128196; ATS R&eacute;sum&eacute; Analyser</div>
+
+                <div class="ats-grid">
+                    <!-- Left: Resume drop zone -->
+                    <div>
+                        <label class="ats-jd-label" for="atsResumeInput">Your R&eacute;sum&eacute;</label>
+                        <div class="drop-zone" id="atsDropZone" onclick="document.getElementById('atsResumeInput').click()" role="button" aria-label="Upload résumé file">
+                            <span class="drop-zone-icon">&#128196;</span>
+                            <span class="drop-zone-label">Drop your r&eacute;sum&eacute; here</span>
+                            <span class="drop-zone-hint">PDF &middot; DOCX &middot; TXT &nbsp;&mdash;&nbsp; max 5 MB</span>
+                            <span class="drop-zone-filename" id="atsFileName"></span>
+                        </div>
+                        <input type="file" id="atsResumeInput" accept=".pdf,.docx,.txt,.text" aria-label="Résumé file picker">
+                    </div>
+
+                    <!-- Right: Job description textarea -->
+                    <div>
+                        <label class="ats-jd-label" for="atsJDText">Job Description</label>
+                        <textarea id="atsJDText" class="ats-jd-textarea" placeholder="Paste the full job description here — the more detail, the better the analysis..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Generate button -->
+                <button class="btn-ats" id="btnGenerateReport" onclick="runATSAnalysis()">
+                    <div class="ats-spinner" id="atsSpinner"></div>
+                    <span id="btnATSLabel">&#9889; Generate Report</span>
+                </button>
+            </div>
+
+            <!-- Error message -->
+            <div class="ats-error-msg" id="atsErrorMsg"></div>
+
+            <!-- Report output -->
+            <div class="ats-report" id="atsReport">
+
+                <!-- Score hero -->
+                <div class="ats-score-hero">
+                    <div class="ats-score-ring-wrap">
+                        <svg class="ats-score-ring" viewBox="0 0 120 120">
+                            <circle class="ring-bg"   cx="60" cy="60" r="54"/>
+                            <circle class="ring-fill" cx="60" cy="60" r="54" id="atsRingFill"/>
+                        </svg>
+                        <div class="ats-score-center">
+                            <div class="ats-score-number" id="atsScoreNumber">0</div>
+                            <div class="ats-score-label">ATS Score</div>
+                        </div>
+                    </div>
+                    <div class="ats-grade-badge" id="atsGradeBadge">&mdash;</div>
+                    <div class="ats-hero-meta">
+                        <h2 id="atsScoreHeading">Analysing&hellip;</h2>
+                        <div class="ats-breakdown-row" id="atsBreakdownRow"></div>
+                    </div>
+                </div>
+
+                <!-- Keywords + Sections grid -->
+                <div class="ats-cards-grid">
+                    <!-- Matched keywords -->
+                    <div class="ats-card">
+                        <div class="ats-card-title">&#9989; Matched Keywords</div>
+                        <div class="kw-chips" id="atsMatchedKw"></div>
+                    </div>
+                    <!-- Missing keywords -->
+                    <div class="ats-card">
+                        <div class="ats-card-title">&#10060; Missing Keywords</div>
+                        <div class="kw-chips" id="atsMissingKw"></div>
+                    </div>
+                    <!-- Sections detected -->
+                    <div class="ats-card">
+                        <div class="ats-card-title">&#128203; R&eacute;sum&eacute; Sections</div>
+                        <ul class="section-list" id="atsSectionList"></ul>
+                    </div>
+                    <!-- Contact info -->
+                    <div class="ats-card">
+                        <div class="ats-card-title">&#128222; Contact Info Detected</div>
+                        <div class="contact-row" id="atsContactRow"></div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="ats-card">
+                    <div class="ats-card-title">&#128161; Recommendations</div>
+                    <ol class="ats-rec-list" id="atsRecList"></ol>
+                </div>
+
+            </div><!-- /.ats-report -->
+        </div><!-- /#ats-section -->
+
+    </div><!-- /.container -->
 
     <script>
         // Skills Chips Logic
@@ -917,8 +1401,20 @@
                     resultsCount.textContent = `Found ${data.results.length} job listing${data.results.length === 1 ? '' : 's'} across sources`;
                     resultsInfo.classList.add('show');
 
-                    // Populate Warnings
-                    if (data.warnings && data.warnings.length > 0) {
+                    // Dynamically build the Sources label from actual results
+                    const uniqueSources = [...new Set(data.results.map(r => r.source))].sort();
+                    const sourcesLabel = document.getElementById('sourcesLabel');
+                    if (sourcesLabel) {
+                        sourcesLabel.textContent = uniqueSources.length > 0
+                            ? 'Sources: ' + uniqueSources.join(', ')
+                            : 'Sources: —';
+                    }
+
+                    // Only show the warning banner when warnings are meaningful —
+                    // i.e. there are very few results (≤6) meaning all real adapters failed.
+                    // If we have many results from RemoteOK/Jobicy, suppress the noise.
+                    const hasMeaningfulResults = data.results.length > 6;
+                    if (data.warnings && data.warnings.length > 0 && !hasMeaningfulResults) {
                         warningBanner.style.display = 'block';
                         data.warnings.forEach(w => {
                             const li = document.createElement('li');
@@ -953,11 +1449,10 @@
                 return;
             }
 
-            // Colors for company avatars
-            // Retro-futurism avatar palette — warm, era-accurate
+            // Flat avatar colors — neobrutalist palette
             const avatarColors = [
-                '#2A7F7F', '#C8700A', '#3A6F8A', '#8A4E06',
-                '#5B7FA6', '#7F5A2A', '#2A6060', '#A0522D'
+                '#FFDE59', '#FF6B35', '#00C2CB', '#C8F5E4',
+                '#BEDEFF', '#FECDAA', '#C8F5C8', '#E8D5FF'
             ];
 
             results.forEach(job => {
@@ -1022,6 +1517,244 @@
             const div = document.createElement('div');
             div.innerText = text;
             return div.innerHTML;
+        }
+
+        /* ═══════════════════════════════
+           ATS TAB LOGIC
+        ═══════════════════════════════ */
+
+        function switchTab(tab) {
+            const sections = document.querySelectorAll('.tab-section');
+            const buttons  = document.querySelectorAll('.tab-btn');
+            sections.forEach(s => s.classList.remove('active'));
+            buttons.forEach(b  => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+            const targetSection = document.getElementById(tab === 'ats' ? 'ats-section' : 'job-search-section');
+            const targetBtn     = document.getElementById(tab === 'ats' ? 'tabATS' : 'tabJobSearch');
+            if (targetSection) targetSection.classList.add('active');
+            if (targetBtn)     { targetBtn.classList.add('active'); targetBtn.setAttribute('aria-selected', 'true'); }
+        }
+
+        /* ── Drop-zone behaviour ────────────────────────────────── */
+        const dropZone     = document.getElementById('atsDropZone');
+        const resumeInput  = document.getElementById('atsResumeInput');
+        const fileNameEl   = document.getElementById('atsFileName');
+
+        resumeInput.addEventListener('change', () => {
+            if (resumeInput.files[0]) setDropFile(resumeInput.files[0].name);
+        });
+
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                // Assign to hidden input
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                resumeInput.files = dt.files;
+                setDropFile(file.name);
+            }
+        });
+
+        function setDropFile(name) {
+            fileNameEl.textContent = '\ud83d\udcc4 ' + name;
+        }
+
+        /* ── Main ATS analysis call ────────────────────────────── */
+        async function runATSAnalysis() {
+            const file = resumeInput.files[0];
+            const jd   = document.getElementById('atsJDText').value.trim();
+            const errEl  = document.getElementById('atsErrorMsg');
+            const reportEl = document.getElementById('atsReport');
+            const btn    = document.getElementById('btnGenerateReport');
+            const spinner = document.getElementById('atsSpinner');
+            const btnLabel = document.getElementById('btnATSLabel');
+
+            errEl.classList.remove('show');
+            errEl.textContent = '';
+            reportEl.classList.remove('show');
+
+            if (!file) { showATSError('Please upload a résumé file first.'); return; }
+            if (!jd)   { showATSError('Please paste the job description.'); return; }
+
+            // Loading state
+            btn.disabled = true;
+            spinner.style.display = 'block';
+            btnLabel.textContent = 'Analysing…';
+
+            const formData = new FormData();
+            formData.append('resume', file);
+            formData.append('job_description', jd);
+
+            try {
+                const resp = await fetch('/api/ats/analyze', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const data = await resp.json();
+
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnLabel.textContent = '\u26a1 Generate Report';
+
+                if (data.success) {
+                    renderATSReport(data.report);
+                } else {
+                    showATSError(data.error || 'Analysis failed.');
+                }
+            } catch (err) {
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnLabel.textContent = '\u26a1 Generate Report';
+                showATSError('Network error connecting to the analysis server.');
+                console.error(err);
+            }
+        }
+
+        function showATSError(msg) {
+            const el = document.getElementById('atsErrorMsg');
+            el.textContent = '\u26a0\ufe0f ' + msg;
+            el.classList.add('show');
+        }
+
+        /* ── Render the ATS report ───────────────────────────────── */
+        function renderATSReport(r) {
+            const score = r.ats_score;
+            const grade = r.grade;
+
+            // — Score ring animation
+            const circumference = 2 * Math.PI * 54; // 339.29
+            const offset = circumference * (1 - score / 100);
+            const ring = document.getElementById('atsRingFill');
+            ring.style.strokeDashoffset = offset;
+
+            // Ring colour by score
+            if      (score >= 75) ring.style.stroke = '#22c55e';
+            else if (score >= 55) ring.style.stroke = '#f59e0b';
+            else                  ring.style.stroke = '#ef4444';
+
+            // — Score number (animated count-up)
+            const numEl = document.getElementById('atsScoreNumber');
+            let current = 0;
+            const step = Math.ceil(score / 40);
+            const timer = setInterval(() => {
+                current = Math.min(current + step, score);
+                numEl.textContent = current;
+                if (current >= score) clearInterval(timer);
+            }, 30);
+
+            // — Grade badge
+            document.getElementById('atsGradeBadge').textContent = grade;
+
+            // — Heading
+            const headings = {
+                'A+': 'Excellent Match 🌟',
+                'A':  'Great Match 👍',
+                'B+': 'Good Match ✨',
+                'B':  'Decent Match 👌',
+                'C+': 'Partial Match 💡',
+                'C':  'Needs Work 🔧',
+                'D':  'Low Match ⚠\ufe0f',
+            };
+            document.getElementById('atsScoreHeading').textContent =
+                headings[grade] || 'Analysis Complete';
+
+            // — Breakdown pills
+            const breakdown = r.breakdown || {};
+            const bRow = document.getElementById('atsBreakdownRow');
+            bRow.innerHTML = '';
+            const labels = {
+                keyword_match: 'Keywords', sections: 'Sections',
+                contact_info: 'Contact', formatting: 'Format',
+                achievements: 'Impact'
+            };
+            Object.entries(breakdown).forEach(([k, v]) => {
+                const pill = document.createElement('span');
+                pill.className = 'ats-breakdown-pill';
+                pill.textContent = `${labels[k] || k}: ${v}`;
+                bRow.appendChild(pill);
+            });
+
+            // — Matched keywords
+            const matchedEl = document.getElementById('atsMatchedKw');
+            matchedEl.innerHTML = '';
+            const matched = r.keywords?.matched || [];
+            if (matched.length === 0) {
+                matchedEl.innerHTML = '<span style="color:var(--nb-muted);font-size:0.82rem;">None found</span>';
+            } else {
+                matched.slice(0, 40).forEach(kw => {
+                    const chip = document.createElement('span');
+                    chip.className = 'kw-chip matched';
+                    chip.textContent = kw;
+                    matchedEl.appendChild(chip);
+                });
+            }
+
+            // — Missing keywords
+            const missingEl = document.getElementById('atsMissingKw');
+            missingEl.innerHTML = '';
+            const missing = (r.keywords?.missing || []).filter(k => k.length >= 4);
+            if (missing.length === 0) {
+                missingEl.innerHTML = '<span style="color:#22c55e;font-size:0.82rem;">No critical keywords missing! 🎉</span>';
+            } else {
+                missing.slice(0, 30).forEach(kw => {
+                    const chip = document.createElement('span');
+                    chip.className = 'kw-chip missing';
+                    chip.textContent = kw;
+                    missingEl.appendChild(chip);
+                });
+            }
+
+            // — Sections checklist
+            const secList = document.getElementById('atsSectionList');
+            secList.innerHTML = '';
+            const found   = r.sections?.found   || [];
+            const missing2 = r.sections?.missing || [];
+            [...found.map(s => [s, true]), ...missing2.map(s => [s, false])]
+                .forEach(([name, ok]) => {
+                    const li = document.createElement('li');
+                    li.className = 'section-item';
+                    li.innerHTML = ok
+                        ? `<span class="tick">✔</span> ${escapeHtml(name)}`
+                        : `<span class="cross">✘</span> <span style="opacity:0.55">${escapeHtml(name)}</span>`;
+                    secList.appendChild(li);
+                });
+
+            // — Contact info
+            const contactRow = document.getElementById('atsContactRow');
+            contactRow.innerHTML = '';
+            const contactDefs = { email: '\u2709\ufe0f Email', phone: '\ud83d\udcde Phone', linkedin: 'LinkedIn', github: 'GitHub' };
+            Object.entries(contactDefs).forEach(([k, label]) => {
+                const found = r.contact_info?.[k];
+                const pill = document.createElement('span');
+                pill.className = 'contact-pill ' + (found ? 'ok' : 'bad');
+                pill.textContent = label;
+                contactRow.appendChild(pill);
+            });
+
+            // — Recommendations
+            const recList = document.getElementById('atsRecList');
+            recList.innerHTML = '';
+            const recs = r.recommendations || [];
+            if (recs.length === 0) {
+                recList.innerHTML = '<li class="ats-rec-item">No major issues found. Your r\u00e9sum\u00e9 looks great for this role!</li>';
+            } else {
+                recs.forEach((rec, i) => {
+                    const li = document.createElement('li');
+                    li.className = 'ats-rec-item';
+                    li.innerHTML = `<span class="ats-rec-num">${i + 1}</span><span>${escapeHtml(rec)}</span>`;
+                    recList.appendChild(li);
+                });
+            }
+
+            // Show the report
+            document.getElementById('atsReport').classList.add('show');
+            document.getElementById('atsReport').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     </script>
 </body>
