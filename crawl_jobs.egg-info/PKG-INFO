@@ -12,8 +12,12 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: pypdf>=3.0.0
 Requires-Dist: python-docx>=0.8.11
+Requires-Dist: spacy>=3.7.0
+Requires-Dist: nltk>=3.8
 Provides-Extra: web
 Requires-Dist: flask>=2.0.0; extra == "web"
+Provides-Extra: semantic
+Requires-Dist: sentence-transformers>=2.7.0; extra == "semantic"
 Dynamic: license-file
 
 # Crawl: Scratch-built HTML Parser & Web Crawling Engine

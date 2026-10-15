@@ -1523,73 +1523,84 @@
            ATS TAB LOGIC
         ═══════════════════════════════ */
 
-        function switchTab(tab) {
-            const sections = document.querySelectorAll('.tab-section');
-            const buttons  = document.querySelectorAll('.tab-btn');
-            sections.forEach(s => s.classList.remove('active'));
-            buttons.forEach(b  => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-            const targetSection = document.getElementById(tab === 'ats' ? 'ats-section' : 'job-search-section');
-            const targetBtn     = document.getElementById(tab === 'ats' ? 'tabATS' : 'tabJobSearch');
-            if (targetSection) targetSection.classList.add('active');
-            if (targetBtn)     { targetBtn.classList.add('active'); targetBtn.setAttribute('aria-selected', 'true'); }
+        // Tab Switcher
+        function switchTab(tabId) {
+            const isJobSearch = (tabId === 'job-search' || tabId === 'jobSearch');
+            const targetBtnId = isJobSearch ? 'tabJobSearch' : 'tabATS';
+            const targetSecId = isJobSearch ? 'job-search-section' : 'ats-section';
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const isActive = (btn.id === targetBtnId);
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+            document.querySelectorAll('.tab-section').forEach(sec => {
+                const isActive = (sec.id === targetSecId);
+                sec.classList.toggle('active', isActive);
+            });
         }
 
         /* ── Drop-zone behaviour ────────────────────────────────── */
-        const dropZone     = document.getElementById('atsDropZone');
-        const resumeInput  = document.getElementById('atsResumeInput');
-        const fileNameEl   = document.getElementById('atsFileName');
+        const dropZone = document.getElementById('atsDropZone');
+        const fileInput = document.getElementById('atsResumeInput');
+        const fileNameEl = document.getElementById('atsFileName');
 
-        resumeInput.addEventListener('change', () => {
-            if (resumeInput.files[0]) setDropFile(resumeInput.files[0].name);
+        ['dragenter', 'dragover'].forEach(name => {
+            dropZone.addEventListener(name, (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
         });
-
-        dropZone.addEventListener('dragover', e => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
+        ['dragleave', 'drop'].forEach(name => {
+            dropZone.addEventListener(name, (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+            });
         });
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-        dropZone.addEventListener('drop', e => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file) {
-                // Assign to hidden input
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                resumeInput.files = dt.files;
-                setDropFile(file.name);
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileNameDisplay();
             }
         });
+        fileInput.addEventListener('change', updateFileNameDisplay);
 
-        function setDropFile(name) {
-            fileNameEl.textContent = '\ud83d\udcc4 ' + name;
+        function updateFileNameDisplay() {
+            if (fileInput.files.length > 0) {
+                fileNameEl.textContent = '📄 ' + fileInput.files[0].name;
+            } else {
+                fileNameEl.textContent = '';
+            }
         }
 
         /* ── Main ATS analysis call ────────────────────────────── */
         async function runATSAnalysis() {
-            const file = resumeInput.files[0];
-            const jd   = document.getElementById('atsJDText').value.trim();
             const errEl  = document.getElementById('atsErrorMsg');
-            const reportEl = document.getElementById('atsReport');
-            const btn    = document.getElementById('btnGenerateReport');
+            errEl.classList.remove('show');
+
+            if (fileInput.files.length === 0) {
+                showATSError('Please select or drop a résumé file (PDF, DOCX, or TXT).');
+                return;
+            }
+
+            const jdText = document.getElementById('atsJDText').value.trim();
+            if (!jdText) {
+                showATSError('Please paste the job description.');
+                return;
+            }
+
+            const btn = document.getElementById('btnGenerateReport');
             const spinner = document.getElementById('atsSpinner');
             const btnLabel = document.getElementById('btnATSLabel');
 
-            errEl.classList.remove('show');
-            errEl.textContent = '';
-            reportEl.classList.remove('show');
-
-            if (!file) { showATSError('Please upload a résumé file first.'); return; }
-            if (!jd)   { showATSError('Please paste the job description.'); return; }
-
-            // Loading state
             btn.disabled = true;
-            spinner.style.display = 'block';
-            btnLabel.textContent = 'Analysing…';
+            spinner.style.display = 'inline-block';
+            btnLabel.textContent = 'Analysing...';
 
             const formData = new FormData();
-            formData.append('resume', file);
-            formData.append('job_description', jd);
+            formData.append('resume', fileInput.files[0]);
+            formData.append('job_description', jdText);
 
             try {
                 const resp = await fetch('/api/ats/analyze', {
@@ -1600,7 +1611,7 @@
 
                 btn.disabled = false;
                 spinner.style.display = 'none';
-                btnLabel.textContent = '\u26a1 Generate Report';
+                btnLabel.textContent = '⚡ Generate Report';
 
                 if (data.success) {
                     renderATSReport(data.report);
@@ -1610,7 +1621,7 @@
             } catch (err) {
                 btn.disabled = false;
                 spinner.style.display = 'none';
-                btnLabel.textContent = '\u26a1 Generate Report';
+                btnLabel.textContent = '⚡ Generate Report';
                 showATSError('Network error connecting to the analysis server.');
                 console.error(err);
             }
@@ -1618,7 +1629,7 @@
 
         function showATSError(msg) {
             const el = document.getElementById('atsErrorMsg');
-            el.textContent = '\u26a0\ufe0f ' + msg;
+            el.textContent = '⚠️ ' + msg;
             el.classList.add('show');
         }
 
@@ -1659,7 +1670,7 @@
                 'B':  'Decent Match 👌',
                 'C+': 'Partial Match 💡',
                 'C':  'Needs Work 🔧',
-                'D':  'Low Match ⚠\ufe0f',
+                'D':  'Low Match ⚠️',
             };
             document.getElementById('atsScoreHeading').textContent =
                 headings[grade] || 'Analysis Complete';
@@ -1671,7 +1682,7 @@
             const labels = {
                 keyword_match: 'Keywords', sections: 'Sections',
                 contact_info: 'Contact', formatting: 'Format',
-                achievements: 'Impact'
+                achievements: 'Impact', semantic_match: 'Semantic'
             };
             Object.entries(breakdown).forEach(([k, v]) => {
                 const pill = document.createElement('span');
@@ -1728,7 +1739,7 @@
             // — Contact info
             const contactRow = document.getElementById('atsContactRow');
             contactRow.innerHTML = '';
-            const contactDefs = { email: '\u2709\ufe0f Email', phone: '\ud83d\udcde Phone', linkedin: 'LinkedIn', github: 'GitHub' };
+            const contactDefs = { email: '✉️ Email', phone: '📞 Phone', linkedin: 'LinkedIn', github: 'GitHub' };
             Object.entries(contactDefs).forEach(([k, label]) => {
                 const found = r.contact_info?.[k];
                 const pill = document.createElement('span');
@@ -1742,12 +1753,22 @@
             recList.innerHTML = '';
             const recs = r.recommendations || [];
             if (recs.length === 0) {
-                recList.innerHTML = '<li class="ats-rec-item">No major issues found. Your r\u00e9sum\u00e9 looks great for this role!</li>';
+                recList.innerHTML = '<li class="ats-rec-item">No major issues found. Your résumé looks great for this role!</li>';
             } else {
                 recs.forEach((rec, i) => {
+                    const text = (typeof rec === 'object' && rec !== null) ? (rec.text || '') : String(rec || '');
+                    const sev = (typeof rec === 'object' && rec !== null) ? (rec.severity || '') : '';
+                    let sevBadge = '';
+                    if (sev === 'high') {
+                        sevBadge = '<span style="background:#fee2e2;color:#991b1b;border:1px solid #f87171;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:700;margin-right:8px;display:inline-block;">HIGH</span>';
+                    } else if (sev === 'medium') {
+                        sevBadge = '<span style="background:#fef3c7;color:#92400e;border:1px solid #fbbf24;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:700;margin-right:8px;display:inline-block;">MEDIUM</span>';
+                    } else if (sev === 'info') {
+                        sevBadge = '<span style="background:#e0f2fe;color:#0369a1;border:1px solid #38bdf8;padding:2px 6px;border-radius:4px;font-size:0.75rem;font-weight:700;margin-right:8px;display:inline-block;">INFO</span>';
+                    }
                     const li = document.createElement('li');
                     li.className = 'ats-rec-item';
-                    li.innerHTML = `<span class="ats-rec-num">${i + 1}</span><span>${escapeHtml(rec)}</span>`;
+                    li.innerHTML = `<span class="ats-rec-num">${i + 1}</span><span>${sevBadge}${escapeHtml(text)}</span>`;
                     recList.appendChild(li);
                 });
             }

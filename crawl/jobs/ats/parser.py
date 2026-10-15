@@ -1,39 +1,16 @@
 """Resume text extractor.
 
-Supports PDF (.pdf), DOCX (.docx), and plain text (.txt / .text) files.
-Returns the raw extracted text as a single string.
+Delegates to Stage 1 Ingestion pipeline for backward compatibility.
 """
 
-import io
-from typing import Optional
+from crawl.jobs.ats.pipeline.stage1_ingestion import ingest
 
 
 def extract_text(file_bytes: bytes, filename: str) -> str:
-    """Extract plain text from a résumé file.
+    """Extract plain text from a résumé file using Stage 1 Ingestion pipeline."""
+    result = ingest(file_bytes, filename)
+    return result.text
 
-    Args:
-        file_bytes: Raw bytes of the uploaded file.
-        filename:   Original filename (used to determine format).
-
-    Returns:
-        Extracted plain-text content of the résumé.
-
-    Raises:
-        ValueError: If the file format is unsupported or extraction fails.
-    """
-    ext = _get_extension(filename)
-
-    if ext == ".pdf":
-        return _extract_pdf(file_bytes)
-    elif ext == ".docx":
-        return _extract_docx(file_bytes)
-    elif ext in (".txt", ".text", ".md"):
-        return _extract_plain(file_bytes)
-    else:
-        raise ValueError(
-            f"Unsupported file format '{ext}'. "
-            "Please upload a PDF, DOCX, or TXT file."
-        )
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
