@@ -1,3 +1,0 @@
-[console_scripts]
-crawl = crawl.cli:main
-crawl-any-website = crawl.cli:main

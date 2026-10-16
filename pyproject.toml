@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "crawl-jobs"
-version = "1.1.0"
-description = "A production-quality web crawling and HTML parsing engine built completely from scratch."
+version = "1.2.0"
+description = "A production-quality web crawling, job searching, ATS scoring, and NLP analytics engine built from scratch."
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
@@ -31,6 +31,14 @@ web = [
 semantic = [
     "sentence-transformers>=2.7.0"
 ]
+analytics = [
+    "numpy>=1.20.0"
+]
+all = [
+    "flask>=2.0.0",
+    "sentence-transformers>=2.7.0",
+    "numpy>=1.20.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -41,6 +49,7 @@ include = ["crawl*"]
 "crawl.jobs.ats" = ["data/*.json", "data/*.txt"]
 
 [project.scripts]
+crawl-jobs = "crawl.cli:main"
 crawl-any-website = "crawl.cli:main"
 crawl = "crawl.cli:main"
 

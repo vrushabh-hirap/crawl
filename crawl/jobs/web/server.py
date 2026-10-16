@@ -11,11 +11,12 @@ try:
     from flask import Flask, request, jsonify, send_from_directory
 except ImportError:
     # This will be raised and handled in the CLI module
-    raise ImportError("Flask is required for the web server interface. Install via: pip install crawl-any-website[web]")
+    raise ImportError("Flask is required for the web server interface. Install via: pip install 'crawl-jobs[web]'")
 
 from crawl.jobs.models import JobQuery
 from crawl.jobs.engine import JobSearchEngine
 from crawl.jobs.ats.analyzer import ATSAnalyzer
+from crawl.nlp import get_tool_registry, validate_nlp_request, execute_nlp_tool
 from crawl.utils import setup_logger
 
 logger = setup_logger(__name__)
@@ -111,6 +112,74 @@ def api_ats_analyze() -> Any:
     except Exception as e:
         logger.exception("Unexpected error during ATS analysis")
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/nlp/tools", methods=["GET"])
+def api_nlp_tools() -> Any:
+    """Returns the list of available NLP Lab tools, schemas, and default options."""
+    try:
+        tools = get_tool_registry()
+        return jsonify({
+            "success": True,
+            "tools": [t.to_dict() for t in tools]
+        })
+    except Exception as e:
+        logger.exception("Error retrieving NLP tool registry")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/nlp/run", methods=["POST"])
+@app.route("/api/nlp/execute", methods=["POST"])
+def api_nlp_run() -> Any:
+    """Executes or validates an NLP Lab tool request."""
+    try:
+        if not request.is_json:
+            return jsonify({
+                "success": False,
+                "error": "Request body must be JSON."
+            }), 400
+
+        data = request.get_json() or {}
+        tool_id = (data.get("tool_id") or "").strip()
+        text = data.get("text", "")
+        options = data.get("options", {})
+
+        if not tool_id:
+            return jsonify({
+                "success": False,
+                "error": "Field 'tool_id' is required."
+            }), 400
+
+        if not isinstance(text, str) or not text.strip():
+            return jsonify({
+                "success": False,
+                "error": "Input text is required and cannot be empty."
+            }), 400
+
+        if not isinstance(options, dict):
+            return jsonify({
+                "success": False,
+                "error": "Field 'options' must be a dictionary/object."
+            }), 400
+
+        # Validate request parameters against tool schema
+        is_valid, validation_err, validated_options = validate_nlp_request(tool_id, text, options)
+        if not is_valid:
+            return jsonify({
+                "success": False,
+                "error": validation_err
+            }), 400
+
+        response = execute_nlp_tool(tool_id, text, validated_options)
+        return jsonify(response)
+
+    except ValueError as e:
+        logger.warning(f"NLP validation error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        logger.exception("Unexpected error executing NLP tool")
+        return jsonify({"success": False, "error": str(e)}), 500
+
 
 
 def run_server(host: str, port: int, no_browser: bool) -> None:

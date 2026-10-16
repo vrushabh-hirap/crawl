@@ -53,14 +53,14 @@ def main() -> None:
 
     # 2. Legacy fallback behavior for URL parsing
     parser = argparse.ArgumentParser(
-        description="crawl-any-website: A scratch-built HTML parser and web crawling engine."
+        description="crawl-jobs: A scratch-built HTML parser, web crawler, job search engine, and NLP Lab workbench."
     )
     
     # Define version option (-v / --version)
     parser.add_argument(
         "-v", "--version",
         action="version",
-        version=f"crawl-any-website {__version__}",
+        version=f"crawl-jobs {__version__}",
         help="Show the package version and exit."
     )
     

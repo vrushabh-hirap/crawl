@@ -34,10 +34,12 @@ _ACRONYM_FILE = _DATA_DIR / "acronyms.json"
 @dataclass
 class NormalizerConfig:
     """Configuration for the text normalization stage."""
-    method: str = "lemmatizer"          # "lemmatizer" | "stemmer"
+    method: str = "lemmatizer"          # "lemmatizer" (spaCy) | "stemmer" (Porter) | "wordnet" (WordNet)
     expand_acronyms: bool = True
     preserve_compounds: bool = True     # keep "ci/cd", "front-end" as single tokens
     remove_stopwords: bool = True
+    wordnet_pos: str = "all"            # WordNet POS: "all" | "n" | "v" | "a" | "r"
+    raise_on_missing_wordnet: bool = True  # Raise LookupError with clear download instructions if True
 
 
 @dataclass
@@ -46,6 +48,9 @@ class NormalizerOutput:
     tokens: List[str]                   # normalized token list
     lemma_map: Dict[str, str]           # original_token → lemma (for rich recs)
     expanded_text: str                  # text after acronym expansion
+    method_used: str = "spacy"          # method that produced result: "spacy" | "wordnet" | "porter"
+    warning: Optional[str] = None       # populated if warning or fallback occurred
+
 
 
 # ── Stop-words ────────────────────────────────────────────────────────────────
@@ -64,9 +69,20 @@ _STOP_WORDS: Set[str] = {
 }
 
 
+WORDNET_MISSING_MSG = (
+    "Required NLTK WordNet data is missing. "
+    "To install it, run in your terminal:\n"
+    "    python -m nltk.downloader wordnet omw-1.4\n"
+    "or in Python:\n"
+    "    import nltk\n"
+    "    nltk.download('wordnet')\n"
+    "    nltk.download('omw-1.4')"
+)
+
 # ── Singleton model/resource cache ───────────────────────────────────────────
 _nlp = None
 _stemmer = None
+_wordnet = None
 _acronyms: Optional[Dict[str, str]] = None
 
 
@@ -103,6 +119,22 @@ def _load_stemmer():
     return _stemmer if _stemmer is not False else None
 
 
+def _load_wordnet():
+    global _wordnet
+    if _wordnet is not None:
+        return _wordnet if _wordnet is not False else None
+    try:
+        from nltk.stem import WordNetLemmatizer  # type: ignore
+        lem = WordNetLemmatizer()
+        # Trigger corpus lookup to verify availability
+        lem.lemmatize("testing", pos="v")
+        _wordnet = lem
+        return _wordnet
+    except (ImportError, LookupError, Exception):
+        _wordnet = False
+        return None
+
+
 # ── Public entry point ────────────────────────────────────────────────────────
 
 def normalize(text: str, config: Optional[NormalizerConfig] = None) -> NormalizerOutput:
@@ -113,7 +145,7 @@ def normalize(text: str, config: Optional[NormalizerConfig] = None) -> Normalize
         config: Normalization configuration. Defaults to NormalizerConfig().
 
     Returns:
-        NormalizerOutput with tokens, lemma map, and expanded text.
+        NormalizerOutput with tokens, lemma map, expanded text, method_used, and warning.
     """
     if config is None:
         config = NormalizerConfig()
@@ -129,10 +161,21 @@ def normalize(text: str, config: Optional[NormalizerConfig] = None) -> Normalize
     raw_tokens = _tokenize(protected)
 
     # ── Step 4: Lemmatize or stem ─────────────────────────────────────────
-    if config.method == "lemmatizer":
-        tokens, lemma_map = _lemmatize(raw_tokens)
-    else:
+    method_used = "spacy"
+    warning: Optional[str] = None
+
+    if config.method in ("wordnet", "wordnet_lemmatizer"):
+        tokens, lemma_map, method_used, warning = _lemmatize_wordnet(
+            raw_tokens,
+            pos=config.wordnet_pos,
+            raise_on_missing=config.raise_on_missing_wordnet,
+        )
+    elif config.method in ("stemmer", "porter"):
         tokens, lemma_map = _stem(raw_tokens)
+        method_used = "porter"
+    else:  # default "lemmatizer" (spaCy)
+        tokens, lemma_map = _lemmatize(raw_tokens)
+        method_used = "spacy"
 
     # ── Step 5: Stopword removal ──────────────────────────────────────────
     if config.remove_stopwords:
@@ -143,6 +186,8 @@ def normalize(text: str, config: Optional[NormalizerConfig] = None) -> Normalize
         tokens=tokens,
         lemma_map=lemma_map,
         expanded_text=expanded,
+        method_used=method_used,
+        warning=warning,
     )
 
 
@@ -211,3 +256,56 @@ def _stem(tokens: List[str]) -> Tuple[List[str], Dict[str, str]]:
     stems    = [stemmer.stem(t) for t in tokens]
     stem_map = {orig: stem for orig, stem in zip(tokens, stems)}
     return stems, stem_map
+
+
+# ── Lemmatization via NLTK WordNet ───────────────────────────────────────────
+
+def _lemmatize_wordnet(
+    tokens: List[str],
+    pos: str = "all",
+    raise_on_missing: bool = True
+) -> Tuple[List[str], Dict[str, str], str, Optional[str]]:
+    """Lemmatizes tokens using WordNet.
+
+    If WordNet data is unavailable:
+      - If raise_on_missing is True: raises LookupError with clear installation instructions.
+      - If raise_on_missing is False: falls back to spaCy or identity, returning an explicit
+        method_used indicating the fallback (e.g. "spacy (fallback: wordnet missing)")
+        along with the warning message. Never silently claims WordNet was used.
+    """
+    lem = _load_wordnet()
+    if lem is None:
+        if raise_on_missing:
+            raise LookupError(WORDNET_MISSING_MSG)
+        # Explicit fallback — never claim WordNet was used
+        nlp = _load_spacy()
+        if nlp is not None:
+            lemmas, lemma_map = _lemmatize(tokens)
+            return lemmas, lemma_map, "spacy (fallback: wordnet missing)", WORDNET_MISSING_MSG
+        else:
+            return tokens, {t: t for t in tokens}, "identity (fallback: wordnet missing)", WORDNET_MISSING_MSG
+
+    pos_tag = (pos or "all").lower()
+    valid_pos = {"n", "v", "a", "r"}
+
+    lemmas = []
+    lemma_map = {}
+
+    for token in tokens:
+        if pos_tag in valid_pos:
+            lemma = lem.lemmatize(token, pos=pos_tag)
+        elif pos_tag == "all":
+            lemma = token
+            # Try verb first, then noun, adjective, adverb
+            for p in ("v", "n", "a", "r"):
+                res = lem.lemmatize(token, pos=p)
+                if res != token:
+                    lemma = res
+                    break
+        else:
+            lemma = lem.lemmatize(token)
+        lemmas.append(lemma)
+        lemma_map[token] = lemma
+
+    return lemmas, lemma_map, "wordnet", None
+

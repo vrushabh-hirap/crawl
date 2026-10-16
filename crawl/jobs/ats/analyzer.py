@@ -43,7 +43,7 @@ class ATSAnalyzer:
                     See ADR-1 in stage3_normalizer.py for the trade-off rationale.
     """
 
-    def __init__(self, normalizer: Literal["lemmatizer", "stemmer"] = "lemmatizer"):
+    def __init__(self, normalizer: Literal["lemmatizer", "stemmer", "wordnet"] = "lemmatizer"):
         self._norm_config = NormalizerConfig(method=normalizer)
 
     def analyze(

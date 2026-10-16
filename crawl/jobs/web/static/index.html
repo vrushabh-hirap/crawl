@@ -1071,6 +1071,545 @@
             display: none;
         }
         .ats-error-msg.show { display: block; }
+
+        /* ════════════════════════════════
+           NLP LAB WORKBENCH STYLES
+        ════════════════════════════════ */
+        .nlp-panel {
+            background: var(--nb-surface);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .nlp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: var(--border-thin);
+            padding-bottom: 1rem;
+        }
+        .nlp-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+            color: var(--nb-text);
+        }
+        .nlp-subtitle {
+            font-size: 0.88rem;
+            color: var(--nb-muted);
+            margin-top: 0.25rem;
+        }
+        .nlp-badge {
+            background: var(--nb-mint);
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3rem 0.75rem;
+            text-transform: uppercase;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Tools Selection Grid */
+        .nlp-tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+        .nlp-tool-card {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.15rem;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 0.75rem;
+            user-select: none;
+            position: relative;
+        }
+        .nlp-tool-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow);
+        }
+        .nlp-tool-card.active {
+            background: var(--nb-yellow);
+            box-shadow: var(--shadow);
+            transform: translate(-1px, -1px);
+        }
+        .nlp-tool-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nlp-tool-icon-name {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .nlp-tool-icon {
+            font-size: 1.35rem;
+        }
+        .nlp-tool-name {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+        }
+        .nlp-tool-tag {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: var(--nb-white);
+            border: var(--border-thin);
+            border-radius: 2px;
+            padding: 0.15rem 0.45rem;
+            text-transform: uppercase;
+        }
+        .nlp-tool-desc {
+            font-size: 0.82rem;
+            color: var(--nb-muted);
+            line-height: 1.45;
+        }
+        .nlp-tool-status {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--nb-text);
+        }
+        .nlp-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 1px solid var(--nb-black);
+            display: inline-block;
+        }
+        .nlp-status-dot.pending {
+            background: #f59e0b;
+        }
+
+        /* Tool Options Box */
+        .nlp-options-box {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .nlp-options-head {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nlp-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+        .nlp-opt-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .nlp-opt-label {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--nb-text);
+        }
+        .nlp-opt-desc {
+            font-size: 0.75rem;
+            color: var(--nb-muted);
+            margin-bottom: 0.2rem;
+        }
+        .nlp-opt-select, .nlp-opt-input {
+            padding: 0.55rem 0.75rem;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            background: var(--nb-bg);
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            outline: none;
+            width: 100%;
+        }
+        .nlp-opt-checkbox-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.4rem;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .nlp-opt-checkbox-wrap input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--nb-black);
+        }
+
+        /* Input Text Area Section */
+        .nlp-input-box {
+            margin-bottom: 1.5rem;
+        }
+        .nlp-input-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .nlp-input-label {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .nlp-input-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .nlp-btn-sm {
+            background: var(--nb-card);
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-press);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.1s, transform 0.1s;
+        }
+        .nlp-btn-sm:hover {
+            background: var(--nb-yellow);
+        }
+        .nlp-counter {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--nb-muted);
+            margin-left: 0.5rem;
+        }
+        .nlp-textarea {
+            width: 100%;
+            min-height: 140px;
+            max-height: 350px;
+            resize: vertical;
+            padding: 0.9rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            outline: none;
+            color: var(--nb-text);
+        }
+        .nlp-textarea:focus {
+            background: var(--nb-white);
+            border-color: var(--nb-black);
+        }
+
+        /* Action bar & button */
+        .nlp-action-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-nlp {
+            background: var(--nb-yellow);
+            color: var(--nb-black);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.85rem 2rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn-nlp:hover:not(:disabled) {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .btn-nlp:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: var(--shadow-press);
+        }
+        .btn-nlp:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .nlp-spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid var(--nb-black);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        .nlp-spinner.show { display: inline-block; }
+
+        /* Error Banner */
+        .nlp-error-msg {
+            background: #FFE0D8;
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 1.25rem;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #991b1b;
+            display: none;
+            margin-bottom: 1.5rem;
+        }
+        .nlp-error-msg.show { display: block; }
+
+        /* Output / Results section */
+        .nlp-results-section {
+            display: none;
+            margin-top: 2rem;
+        }
+        .nlp-results-section.show { display: block; }
+
+        .nlp-results-card {
+            background: var(--nb-surface);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+        }
+        .nlp-results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-bottom: var(--border-thin);
+            padding-bottom: 1rem;
+        }
+        .nlp-results-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .nlp-status-badge {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.35rem 0.85rem;
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+        }
+        .nlp-status-badge.completed {
+            background: var(--nb-mint);
+            color: #065f46;
+        }
+        .nlp-status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Notice banner for connected schema pending implementation */
+        .nlp-notice-box {
+            background: #fefce8;
+            border: var(--border-thin);
+            border-left: 6px solid #f59e0b;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+        .nlp-notice-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 0.92rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Metrics Grid */
+        .nlp-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .nlp-metric-card {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .nlp-metric-label {
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--nb-muted);
+            letter-spacing: 0.05em;
+        }
+        .nlp-metric-value {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--nb-black);
+            line-height: 1.2;
+        }
+        .nlp-metric-sub {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--nb-muted);
+        }
+
+        /* Token Stream / Pills */
+        .nlp-tokens-wrap {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .nlp-tokens-title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nlp-tokens-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 0.5rem;
+            background: var(--nb-bg);
+            border: var(--border-thin);
+            border-radius: var(--radius-sm);
+        }
+        .nlp-token-pill {
+            background: var(--nb-card);
+            border: var(--border-thin);
+            border-radius: 2px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            padding: 0.2rem 0.55rem;
+            box-shadow: 1px 1px 0 var(--nb-black);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .nlp-token-subtag {
+            font-size: 0.65rem;
+            color: #4b5563;
+            background: var(--nb-surface);
+            padding: 0.05rem 0.25rem;
+            border-radius: 2px;
+        }
+        .nlp-token-pill.changed {
+            background: #fef08a;
+            border-color: #ca8a04;
+        }
+        .nlp-token-pill.changed .nlp-token-subtag {
+            background: #fde047;
+            color: #713f12;
+            font-weight: 700;
+        }
+
+        /* JSON Inspector */
+        .nlp-json-box {
+            background: var(--nb-card);
+            border: var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 1.25rem;
+        }
+        .nlp-json-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        .nlp-json-title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .nlp-json-code {
+            background: #111111;
+            color: #38bdf8;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            border: var(--border-thin);
+            overflow-x: auto;
+            max-height: 260px;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -1088,6 +1627,7 @@
         <nav class="tab-nav" role="tablist" aria-label="Application sections">
             <button class="tab-btn active" id="tabJobSearch" role="tab" aria-selected="true"  aria-controls="job-search-section" onclick="switchTab('job-search')">&#128269; Job Search</button>
             <button class="tab-btn"          id="tabATS"       role="tab" aria-selected="false" aria-controls="ats-section"        onclick="switchTab('ats')">&#128196; ATS Analyser</button>
+            <button class="tab-btn"          id="tabNLPLab"    role="tab" aria-selected="false" aria-controls="nlp-lab-section"    onclick="switchTab('nlp-lab')">&#129514; NLP Lab</button>
         </nav>
 
         <!-- ═══ TAB: JOB SEARCH ═══ -->
@@ -1296,6 +1836,177 @@
 
             </div><!-- /.ats-report -->
         </div><!-- /#ats-section -->
+
+        <!-- ═══ TAB: NLP LAB ═══ -->
+        <div id="nlp-lab-section" class="tab-section">
+            <div class="nlp-panel">
+                <!-- Header -->
+                <div class="nlp-header">
+                    <div>
+                        <div class="nlp-title">&#129514; NLP Laboratory &amp; Text Analytics</div>
+                        <div class="nlp-subtitle">Interactive computational linguistics workbench: tokenization, morphology, syntax, vector models, and semantic search.</div>
+                    </div>
+                    <span class="nlp-badge">&#9889; Interactive Workbench</span>
+                </div>
+
+                <!-- Tool Selection Grid -->
+                <div class="nlp-tools-grid" id="nlpToolsGrid">
+                    <div class="nlp-tool-card active" data-tool="text_analysis" onclick="selectNLPTool('text_analysis')" role="button" tabindex="0" aria-label="Text Analysis tool">
+                        <div class="nlp-tool-head">
+                            <div class="nlp-tool-icon-name">
+                                <span class="nlp-tool-icon">&#128202;</span>
+                                <span class="nlp-tool-name">Text Analysis</span>
+                            </div>
+                            <span class="nlp-tool-tag">Analytics</span>
+                        </div>
+                        <div class="nlp-tool-desc">Language detection, word count, sentence count, and token stream breakdown.</div>
+                        <div class="nlp-tool-status"><span class="nlp-status-dot"></span> Ready</div>
+                    </div>
+
+                    <div class="nlp-tool-card" data-tool="stem_lemma" onclick="selectNLPTool('stem_lemma')" role="button" tabindex="0" aria-label="Stemming and Lemmatization tool">
+                        <div class="nlp-tool-head">
+                            <div class="nlp-tool-icon-name">
+                                <span class="nlp-tool-icon">&#127793;</span>
+                                <span class="nlp-tool-name">Stem &amp; Lemmatize</span>
+                            </div>
+                            <span class="nlp-tool-tag">Morphology</span>
+                        </div>
+                        <div class="nlp-tool-desc">WordNet and spaCy lemmatization options, Porter and Snowball stemmers.</div>
+                        <div class="nlp-tool-status"><span class="nlp-status-dot"></span> Ready</div>
+                    </div>
+
+                    <div class="nlp-tool-card" data-tool="pos_embeddings_classification" onclick="selectNLPTool('pos_embeddings_classification')" role="button" tabindex="0" aria-label="POS, Embeddings, and Classification tool">
+                        <div class="nlp-tool-head">
+                            <div class="nlp-tool-icon-name">
+                                <span class="nlp-tool-icon">&#127991;&#65039;</span>
+                                <span class="nlp-tool-name">POS &amp; Embeddings</span>
+                            </div>
+                            <span class="nlp-tool-tag">Syntax/Vectors</span>
+                        </div>
+                        <div class="nlp-tool-desc">Part-of-speech syntax tagging, dense vector embedding representations, and text categorization.</div>
+                        <div class="nlp-tool-status"><span class="nlp-status-dot"></span> Ready</div>
+                    </div>
+
+                    <div class="nlp-tool-card" data-tool="tfidf" onclick="selectNLPTool('tfidf')" role="button" tabindex="0" aria-label="TF-IDF Analysis tool">
+                        <div class="nlp-tool-head">
+                            <div class="nlp-tool-icon-name">
+                                <span class="nlp-tool-icon">&#128200;</span>
+                                <span class="nlp-tool-name">TF-IDF Matrix</span>
+                            </div>
+                            <span class="nlp-tool-tag">Retrieval</span>
+                        </div>
+                        <div class="nlp-tool-desc">Term Frequency - Inverse Document Frequency scores, keyword weights, and vocabulary matrix.</div>
+                        <div class="nlp-tool-status"><span class="nlp-status-dot"></span> Ready</div>
+                    </div>
+
+                    <div class="nlp-tool-card" data-tool="ngram_probability" onclick="selectNLPTool('ngram_probability')" role="button" tabindex="0" aria-label="N-gram Sequence Probability tool">
+                        <div class="nlp-tool-head">
+                            <div class="nlp-tool-icon-name">
+                                <span class="nlp-tool-icon">&#127922;</span>
+                                <span class="nlp-tool-name">N-gram Probability</span>
+                            </div>
+                            <span class="nlp-tool-tag">Language Model</span>
+                        </div>
+                        <div class="nlp-tool-desc">Statistical n-gram language modeling, sequence likelihood, and perplexity scoring.</div>
+                        <div class="nlp-tool-status"><span class="nlp-status-dot"></span> Ready</div>
+                    </div>
+
+                    <div class="nlp-tool-card" data-tool="lsi_search" onclick="selectNLPTool('lsi_search')" role="button" tabindex="0" aria-label="LSI Search and Categorization tool">
+                        <div class="nlp-tool-head">
+                            <div class="nlp-tool-icon-name">
+                                <span class="nlp-tool-icon">&#128269;</span>
+                                <span class="nlp-tool-name">LSI Search &amp; Topics</span>
+                            </div>
+                            <span class="nlp-tool-tag">Latent SVD</span>
+                        </div>
+                        <div class="nlp-tool-desc">Latent Semantic Indexing for semantic document retrieval and topic categorization.</div>
+                        <div class="nlp-tool-status"><span class="nlp-status-dot"></span> Ready</div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Options Panel -->
+                <div class="nlp-options-box" id="nlpOptionsBox">
+                    <div class="nlp-options-head">
+                        <span id="nlpOptionsTitle">&#9881;&#65039; Tool Configuration Options</span>
+                        <span id="nlpActiveToolBadge" class="nlp-tool-tag">Text Analysis</span>
+                    </div>
+                    <div class="nlp-options-grid" id="nlpOptionsGrid">
+                        <!-- Populated dynamically based on selected tool -->
+                    </div>
+                </div>
+
+                <!-- Input Text Area -->
+                <div class="nlp-input-box">
+                    <div class="nlp-input-head">
+                        <div>
+                            <span class="nlp-input-label">&#128221; Input Text</span>
+                            <span class="nlp-counter" id="nlpTextStats">0 chars &middot; 0 words</span>
+                        </div>
+                        <div class="nlp-input-actions">
+                            <button type="button" class="nlp-btn-sm" onclick="loadNLPSampleText()">&#128196; Load Sample</button>
+                            <button type="button" class="nlp-btn-sm" onclick="clearNLPText()">&#10006; Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="nlpInputText" class="nlp-textarea" placeholder="Paste or type text to run NLP analysis..."></textarea>
+                </div>
+
+                <!-- Action Button & Feedback -->
+                <div class="nlp-action-bar">
+                    <button class="btn-nlp" id="btnRunNLP" onclick="runNLPTool()">
+                        <div class="nlp-spinner" id="nlpSpinner"></div>
+                        <span id="btnNLPLabel">&#9889; Run NLP Tool</span>
+                    </button>
+                    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--nb-muted);">
+                        Endpoint: <code style="background:var(--nb-card); padding:2px 6px; border:1px solid var(--nb-black); border-radius:2px;">POST /api/nlp/run</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Banner -->
+            <div class="nlp-error-msg" id="nlpErrorMsg"></div>
+
+            <!-- Results Output Section -->
+            <div class="nlp-results-section" id="nlpResultsSection">
+                <div class="nlp-results-card">
+                    <div class="nlp-results-header">
+                        <div>
+                            <div class="nlp-results-title" id="nlpResultTitle">&#128202; Analysis Output</div>
+                            <div style="font-size:0.85rem; color:var(--nb-muted); font-family:var(--font-mono);" id="nlpResultTimestamp"></div>
+                        </div>
+                        <span class="nlp-status-badge pending" id="nlpResultStatusBadge">CONNECTED</span>
+                    </div>
+
+                    <!-- Notice Card for Pending / Schema connected state -->
+                    <div class="nlp-notice-box" id="nlpNoticeBox" style="display:none;">
+                        <div class="nlp-notice-title">&#128295; Route &amp; Schema Connected</div>
+                        <div id="nlpNoticeMessage">Input text and parameters validated successfully. The computational engine will process this payload once connected in the upcoming task.</div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="nlp-metrics-grid" id="nlpMetricsGrid">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Tokens / Items Stream -->
+                    <div class="nlp-tokens-wrap" id="nlpTokensWrap" style="display:none;">
+                        <div class="nlp-tokens-title">
+                            <span id="nlpTokensTitle">&#129525; Extracted Tokens</span>
+                            <span class="nlp-counter" id="nlpTokensCount">0 items</span>
+                        </div>
+                        <div class="nlp-tokens-box" id="nlpTokensBox"></div>
+                    </div>
+
+                    <!-- Raw JSON Viewer -->
+                    <div class="nlp-json-box">
+                        <div class="nlp-json-head">
+                            <span class="nlp-json-title">&#128187; API Response Payload</span>
+                            <button type="button" class="nlp-btn-sm" id="btnCopyNLPJson" onclick="copyNLPJson()">&#128203; Copy JSON</button>
+                        </div>
+                        <pre class="nlp-json-code" id="nlpJsonCode">{ }</pre>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /#nlp-lab-section -->
 
     </div><!-- /.container -->
 
@@ -1525,9 +2236,16 @@
 
         // Tab Switcher
         function switchTab(tabId) {
-            const isJobSearch = (tabId === 'job-search' || tabId === 'jobSearch');
-            const targetBtnId = isJobSearch ? 'tabJobSearch' : 'tabATS';
-            const targetSecId = isJobSearch ? 'job-search-section' : 'ats-section';
+            let targetBtnId = 'tabJobSearch';
+            let targetSecId = 'job-search-section';
+
+            if (tabId === 'ats') {
+                targetBtnId = 'tabATS';
+                targetSecId = 'ats-section';
+            } else if (tabId === 'nlp-lab' || tabId === 'nlpLab' || tabId === 'nlp') {
+                targetBtnId = 'tabNLPLab';
+                targetSecId = 'nlp-lab-section';
+            }
 
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 const isActive = (btn.id === targetBtnId);
@@ -1777,6 +2495,802 @@
             document.getElementById('atsReport').classList.add('show');
             document.getElementById('atsReport').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        /* ═══════════════════════════════
+           NLP LAB WORKBENCH LOGIC
+        ═══════════════════════════════ */
+
+        let nlpToolsCatalog = [];
+        let currentNLPToolId = 'text_analysis';
+
+        // Catalog fallback in case offline or API delayed
+        const defaultNLPCatalog = [
+            {
+                id: 'text_analysis',
+                name: 'Text Analysis',
+                category: 'Linguistic Statistics',
+                description: 'Language detection, word count, sentence count, and token stream breakdown.',
+                icon: '📊',
+                badge: 'Analytics',
+                options: [
+                    { name: 'lowercase', type: 'boolean', label: 'Lowercase Tokens', description: 'Convert tokens to lowercase.', default: false },
+                    { name: 'strip_punctuation', type: 'boolean', label: 'Strip Punctuation', description: 'Remove punctuation tokens.', default: false }
+                ],
+                sample_text: "Natural Language Processing enables computers to understand human language. It combines computational linguistics with statistical modeling, machine learning, and deep learning. How effectively can an algorithm parse syntax and semantic context? Let's analyze this sample!"
+            },
+            {
+                id: 'stem_lemma',
+                name: 'Stem & Lemmatize',
+                category: 'Morphological Normalization',
+                description: 'Reduces words to base root forms or dictionary lemmas with WordNet, spaCy, and Porter stemmers.',
+                icon: '🌱',
+                badge: 'Morphology',
+                options: [
+                    { name: 'method', type: 'select', label: 'Normalization Method', description: 'Select algorithm (WordNet, spaCy, or Porter).', default: 'wordnet', choices: ['wordnet', 'spacy', 'porter', 'snowball'] },
+                    { name: 'pos', type: 'select', label: 'WordNet POS Filter', description: 'Part of speech tag filter.', default: 'all', choices: ['all', 'n', 'v', 'a', 'r'] }
+                ],
+                sample_text: "The experienced software engineers were developing distributed web applications, running comprehensive test suites across multiple universities, and consistently improving API performance."
+            },
+            {
+                id: 'pos_embeddings_classification',
+                name: 'POS, Embeddings & Classification',
+                category: 'Syntax & Semantics',
+                description: 'Part-of-speech syntax tagging, dense vector embedding representations, and text categorization.',
+                icon: '🏷️',
+                badge: 'Syntax/Vectors',
+                options: [
+                    { name: 'task', type: 'select', label: 'Operation Mode', description: 'Linguistic operation to execute.', default: 'pos_tagging', choices: ['pos_tagging', 'embeddings', 'classification'] },
+                    { name: 'candidate_labels', type: 'text', label: 'Classification Labels', description: 'Comma-separated candidate categories.', default: 'Technology, Engineering, Science, Business, General' }
+                ],
+                sample_text: "The senior backend engineer deployed high-throughput microservices using Docker and Kubernetes on cloud clusters."
+            },
+            {
+                id: 'tfidf',
+                name: 'TF-IDF Matrix',
+                category: 'Information Retrieval',
+                description: 'Term Frequency - Inverse Document Frequency scores, keyword weights, and vocabulary matrix.',
+                icon: '📈',
+                badge: 'Retrieval',
+                options: [
+                    { name: 'ngram_range', type: 'select', label: 'N-Gram Range', description: 'N-gram token range for TF-IDF matrix.', default: '1-1', choices: ['1-1', '1-2', '1-3'] },
+                    { name: 'max_features', type: 'number', label: 'Top Terms Limit', description: 'Maximum top keywords to display.', default: 20 },
+                    { name: 'corpus', type: 'text', label: 'Additional Reference Documents', description: 'Separate additional documents with double newlines.', default: '' }
+                ],
+                sample_text: "Information retrieval systems leverage term frequency and inverse document frequency to measure keyword significance.\n\nTF-IDF diminishes the weight of universally common words while emphasizing terms with high discriminatory power.\n\nSearch engines rely on vector space representations to match search queries against massive document indices."
+            },
+            {
+                id: 'ngram_probability',
+                name: 'N-gram Sequence Probability',
+                category: 'Statistical Language Modeling',
+                description: 'Statistical n-gram language modeling, sequence likelihood, and perplexity scoring.',
+                icon: '🎲',
+                badge: 'Language Model',
+                options: [
+                    { name: 'n', type: 'select', label: 'N-Gram Order', description: 'N-gram model order (1: Unigram, 2: Bigram, 3: Trigram).', default: 2, choices: [1, 2, 3] },
+                    { name: 'smoothing', type: 'select', label: 'Smoothing Method', description: 'Probability smoothing algorithm.', default: 'laplace', choices: ['laplace', 'none'] },
+                    { name: 'target_sequence', type: 'text', label: 'Target Test Sequence', description: 'Phrase or sentence to score against training text.', default: 'to be or not to be' }
+                ],
+                sample_text: "to be or not to be that is the question whether tis nobler in the mind to suffer the slings and arrows of outrageous fortune or to take arms against a sea of troubles and by opposing end them"
+            },
+            {
+                id: 'lsi_search',
+                name: 'LSI Search & Topics',
+                category: 'Latent Semantic Analysis',
+                description: 'Latent Semantic Indexing (SVD) for semantic document retrieval and topic categorization.',
+                icon: '🔍',
+                badge: 'Latent SVD',
+                options: [
+                    { name: 'mode', type: 'select', label: 'LSI Operation Mode', description: 'Search against query or cluster into latent topics.', default: 'search', choices: ['search', 'categorize'] },
+                    { name: 'query', type: 'text', label: 'Search Query', description: 'Query for semantic relevance ranking.', default: 'scalable backend microservices' },
+                    { name: 'num_topics', type: 'number', label: 'Latent Topics (k)', description: 'Number of SVD latent components.', default: 2 },
+                    { name: 'show_coordinates', type: 'boolean', label: 'Show Latent Coordinates', description: 'Display latent coordinate vectors for each document.', default: true }
+                ],
+                sample_text: "Document 1: Python web development, Flask REST APIs, and PostgreSQL database queries.\n\nDocument 2: Scalable Python backend engineering, Docker microservices architecture, and Kubernetes.\n\nDocument 3: Deep learning neural networks, computer vision, and transformer models in PyTorch.\n\nDocument 4: Machine learning model training, transformers, and deep neural networks in TensorFlow."
+            }
+        ];
+
+        // Fetch tool catalog from /api/nlp/tools
+        async function fetchNLPTools() {
+            try {
+                const res = await fetch('/api/nlp/tools');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.tools) && data.tools.length > 0) {
+                        nlpToolsCatalog = data.tools;
+                    } else {
+                        nlpToolsCatalog = defaultNLPCatalog;
+                    }
+                } else {
+                    nlpToolsCatalog = defaultNLPCatalog;
+                }
+            } catch (e) {
+                console.warn('Could not fetch NLP tools catalog from API, using default catalog.', e);
+                nlpToolsCatalog = defaultNLPCatalog;
+            }
+            renderNLPOptions(currentNLPToolId);
+        }
+
+        function getToolById(id) {
+            return nlpToolsCatalog.find(t => t.id === id) || defaultNLPCatalog.find(t => t.id === id);
+        }
+
+        // Tool Selection
+        function selectNLPTool(toolId) {
+            currentNLPToolId = toolId;
+
+            // Highlight tool card
+            document.querySelectorAll('#nlpToolsGrid .nlp-tool-card').forEach(card => {
+                const isActive = (card.getAttribute('data-tool') === toolId);
+                card.classList.toggle('active', isActive);
+                card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            });
+
+            const tool = getToolById(toolId);
+            if (tool) {
+                const badge = document.getElementById('nlpActiveToolBadge');
+                if (badge) badge.textContent = tool.name;
+                const label = document.getElementById('btnNLPLabel');
+                if (label) label.innerHTML = `&#9889; Run ${escapeHtml(tool.name)}`;
+            }
+
+            renderNLPOptions(toolId);
+        }
+
+        // Render Dynamic Option Inputs
+        function renderNLPOptions(toolId) {
+            const tool = getToolById(toolId);
+            const container = document.getElementById('nlpOptionsGrid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!tool || !tool.options || tool.options.length === 0) {
+                container.innerHTML = '<div style="font-size:0.85rem; color:var(--nb-muted);">No extra configuration needed for this tool.</div>';
+                return;
+            }
+
+            tool.options.forEach(opt => {
+                const field = document.createElement('div');
+                field.className = 'nlp-opt-field';
+
+                if (opt.type === 'boolean') {
+                    field.innerHTML = `
+                        <label class="nlp-opt-label">${escapeHtml(opt.label)}</label>
+                        <div class="nlp-opt-desc">${escapeHtml(opt.description || '')}</div>
+                        <label class="nlp-opt-checkbox-wrap">
+                            <input type="checkbox" id="nlp_opt_${opt.name}" ${opt.default ? 'checked' : ''}>
+                            <span>Enable ${escapeHtml(opt.label)}</span>
+                        </label>
+                    `;
+                } else if (opt.type === 'select') {
+                    const optionsHtml = (opt.choices || []).map(choice => {
+                        const val = (typeof choice === 'object') ? (choice.value || choice.name) : choice;
+                        const label = (typeof choice === 'object') ? (choice.label || choice.name) : choice;
+                        const isSelected = (String(val) === String(opt.default)) ? 'selected' : '';
+                        return `<option value="${escapeHtml(String(val))}" ${isSelected}>${escapeHtml(String(label))}</option>`;
+                    }).join('');
+
+                    field.innerHTML = `
+                        <label class="nlp-opt-label" for="nlp_opt_${opt.name}">${escapeHtml(opt.label)}</label>
+                        <div class="nlp-opt-desc">${escapeHtml(opt.description || '')}</div>
+                        <select class="nlp-opt-select" id="nlp_opt_${opt.name}">
+                            ${optionsHtml}
+                        </select>
+                    `;
+                } else if (opt.type === 'number') {
+                    field.innerHTML = `
+                        <label class="nlp-opt-label" for="nlp_opt_${opt.name}">${escapeHtml(opt.label)}</label>
+                        <div class="nlp-opt-desc">${escapeHtml(opt.description || '')}</div>
+                        <input type="number" class="nlp-opt-input" id="nlp_opt_${opt.name}" value="${escapeHtml(String(opt.default ?? ''))}">
+                    `;
+                } else {
+                    field.innerHTML = `
+                        <label class="nlp-opt-label" for="nlp_opt_${opt.name}">${escapeHtml(opt.label)}</label>
+                        <div class="nlp-opt-desc">${escapeHtml(opt.description || '')}</div>
+                        <input type="text" class="nlp-opt-input" id="nlp_opt_${opt.name}" value="${escapeHtml(String(opt.default ?? ''))}">
+                    `;
+                }
+                container.appendChild(field);
+            });
+        }
+
+        // Collect Options
+        function collectNLPOptions(toolId) {
+            const tool = getToolById(toolId);
+            const options = {};
+            if (!tool || !tool.options) return options;
+
+            tool.options.forEach(opt => {
+                const el = document.getElementById(`nlp_opt_${opt.name}`);
+                if (!el) return;
+                if (opt.type === 'boolean') {
+                    options[opt.name] = el.checked;
+                } else if (opt.type === 'number') {
+                    const num = Number(el.value);
+                    options[opt.name] = isNaN(num) ? opt.default : num;
+                } else {
+                    options[opt.name] = el.value;
+                }
+            });
+            return options;
+        }
+
+        // Textarea helper & stats
+        const nlpTextarea = document.getElementById('nlpInputText');
+        const nlpStatsEl = document.getElementById('nlpTextStats');
+
+        function updateNLPTextStats() {
+            if (!nlpTextarea || !nlpStatsEl) return;
+            const text = nlpTextarea.value.trim();
+            const chars = text.length;
+            const words = text ? text.split(/\s+/).length : 0;
+            nlpStatsEl.textContent = `${chars.toLocaleString()} chars · ${words.toLocaleString()} words`;
+        }
+
+        if (nlpTextarea) {
+            nlpTextarea.addEventListener('input', updateNLPTextStats);
+        }
+
+        function loadNLPSampleText() {
+            const tool = getToolById(currentNLPToolId);
+            if (tool && tool.sample_text && nlpTextarea) {
+                nlpTextarea.value = tool.sample_text;
+                updateNLPTextStats();
+                hideNLPError();
+            }
+        }
+
+        function clearNLPText() {
+            if (nlpTextarea) {
+                nlpTextarea.value = '';
+                updateNLPTextStats();
+            }
+            hideNLPError();
+            const resultsSection = document.getElementById('nlpResultsSection');
+            if (resultsSection) resultsSection.classList.remove('show');
+        }
+
+        function showNLPError(msg) {
+            const errEl = document.getElementById('nlpErrorMsg');
+            if (!errEl) return;
+            errEl.textContent = msg;
+            errEl.classList.add('show');
+            errEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideNLPError() {
+            const errEl = document.getElementById('nlpErrorMsg');
+            if (errEl) errEl.classList.remove('show');
+        }
+
+        // Execute Tool
+        async function runNLPTool() {
+            hideNLPError();
+
+            const text = (nlpTextarea ? nlpTextarea.value : '').trim();
+            if (!text) {
+                showNLPError('Please enter or paste text to analyze.');
+                return;
+            }
+
+            const tool = getToolById(currentNLPToolId);
+            const options = collectNLPOptions(currentNLPToolId);
+
+            const btn = document.getElementById('btnRunNLP');
+            const spinner = document.getElementById('nlpSpinner');
+            const label = document.getElementById('btnNLPLabel');
+
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.classList.add('show');
+            if (label) label.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/nlp/run', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        tool_id: currentNLPToolId,
+                        text: text,
+                        options: options
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    const err = data.error || `Server returned error (${response.status})`;
+                    showNLPError(err);
+                    return;
+                }
+
+                renderNLPResults(data, text, options);
+
+            } catch (err) {
+                console.error('NLP tool execution error:', err);
+                showNLPError('Failed to communicate with the NLP service: ' + err.message);
+            } finally {
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.classList.remove('show');
+                if (label && tool) label.innerHTML = `&#9889; Run ${escapeHtml(tool.name)}`;
+            }
+        }
+
+        // Render Results
+        function renderNLPResults(data, inputText, options) {
+            const resultsSection = document.getElementById('nlpResultsSection');
+            const titleEl = document.getElementById('nlpResultTitle');
+            const tsEl = document.getElementById('nlpResultTimestamp');
+            const statusBadge = document.getElementById('nlpResultStatusBadge');
+            const noticeBox = document.getElementById('nlpNoticeBox');
+            const noticeMsg = document.getElementById('nlpNoticeMessage');
+            const metricsGrid = document.getElementById('nlpMetricsGrid');
+            const tokensWrap = document.getElementById('nlpTokensWrap');
+            const tokensBox = document.getElementById('nlpTokensBox');
+            const tokensCount = document.getElementById('nlpTokensCount');
+            const jsonCode = document.getElementById('nlpJsonCode');
+
+            if (!resultsSection) return;
+
+            titleEl.textContent = `📊 ${data.tool_name || currentNLPToolId} Output`;
+            tsEl.textContent = `Executed at ${new Date().toLocaleTimeString()} · Tool ID: ${data.tool_id}`;
+
+            // Status Badge
+            const isCompleted = (data.status === 'completed');
+            statusBadge.className = isCompleted ? 'nlp-status-badge completed' : 'nlp-status-badge pending';
+            statusBadge.textContent = isCompleted ? 'COMPLETED' : 'CONNECTED (PENDING ENGINE)';
+
+            // Notice Box
+            if (!isCompleted && data.status === 'pending_implementation') {
+                noticeBox.style.display = 'block';
+                noticeMsg.textContent = data.message || 'API route and request parameters validated successfully. Algorithm engine scheduled for integration in the following task.';
+            } else {
+                noticeBox.style.display = 'none';
+            }
+
+            // Metrics Grid
+            metricsGrid.innerHTML = '';
+            const charCount = (data.validation && data.validation.text_characters != null)
+                ? data.validation.text_characters
+                : inputText.length;
+            const wordCount = (data.validation && data.validation.text_words != null)
+                ? data.validation.text_words
+                : inputText.split(/\s+/).length;
+
+            let cards = [];
+
+            // If actual result data exists from Text Analysis or other tool
+            if (data.result && typeof data.result === 'object') {
+                const res = data.result;
+
+                // Notice box for warnings or fallbacks
+                if (res.warning || res.notice) {
+                    noticeBox.style.display = 'block';
+                    const noticeText = res.warning || res.notice;
+                    noticeMsg.innerHTML = `<strong>⚠️ Method Notice:</strong> <pre style="white-space:pre-wrap;margin-top:0.35rem;font-family:var(--font-mono);font-size:0.8rem;">${escapeHtml(noticeText)}</pre>`;
+                }
+
+                // 1. POS Tagging Cards
+                if (res.task === 'pos_tagging' || (res.tagged_tokens && Array.isArray(res.tagged_tokens))) {
+                    cards.push({ label: 'Operation', value: 'POS Tagging', sub: res.engine || 'Syntax parser' });
+                    cards.push({ label: 'Tagged Tokens', value: Number(res.tokens_count || res.tagged_tokens.length).toLocaleString(), sub: 'Lexical stream' });
+                    if (res.lexical_density != null) {
+                        cards.push({ label: 'Lexical Density', value: `${(res.lexical_density * 100).toFixed(0)}%`, sub: 'Content / total words' });
+                    }
+                    if (res.pos_distribution && Object.keys(res.pos_distribution).length > 0) {
+                        const topCat = Object.keys(res.pos_distribution)[0];
+                        cards.push({ label: 'Top POS Category', value: topCat, sub: `${res.pos_distribution[topCat]} occurrences` });
+                    }
+                }
+
+                // 2. Embeddings Cards
+                else if (res.task === 'embeddings' || res.vector !== undefined) {
+                    const shortModel = (res.model || 'Vector').split('(')[0].trim();
+                    cards.push({ label: 'Embedding Model', value: shortModel, sub: res.model || 'Vector' });
+                    cards.push({ label: 'Dimensions', value: `${res.dimensions || (res.vector ? res.vector.length : 0)}-d`, sub: res.installed ? 'Dense neural space' : 'Vector features' });
+                    if (res.vector_norm != null) {
+                        cards.push({ label: 'Vector L2 Norm', value: Number(res.vector_norm).toFixed(4), sub: 'Vector magnitude' });
+                    }
+                    if (res.stats && res.stats.mean != null) {
+                        cards.push({ label: 'Value Range', value: `[${res.stats.min}, ${res.stats.max}]`, sub: `Mean: ${res.stats.mean}` });
+                    }
+                }
+
+                // 3. Classification Cards
+                else if (res.task === 'classification' || res.predicted_label !== undefined) {
+                    cards.push({ label: 'Predicted Class', value: String(res.predicted_label).toUpperCase(), sub: `Confidence: ${res.confidence_percentage || 'High'}` });
+                    if (res.ranking && res.ranking[1]) {
+                        cards.push({ label: 'Runner-Up Category', value: res.ranking[1].label, sub: `Confidence: ${res.ranking[1].percentage}` });
+                    }
+                    if (res.evaluation) {
+                        const totalDocs = res.evaluation.training_documents_total || 20;
+                        const cats = res.evaluation.training_categories ? res.evaluation.training_categories.length : 5;
+                        cards.push({ label: 'Benchmark Corpus', value: `${cats} Categories`, sub: `${totalDocs} exemplars (100% acc)` });
+                    }
+                    if (res.evaluation && res.evaluation.margin_over_runner_up != null) {
+                        cards.push({ label: 'Decision Margin', value: `+${(res.evaluation.margin_over_runner_up * 100).toFixed(1)}%`, sub: 'Margin over runner-up' });
+                    }
+                }
+
+                // 4. N-Gram Language Model Cards
+                else if (res.task === 'ngram_probability' || res.total_probability !== undefined) {
+                    cards.push({
+                        label: 'Model Order',
+                        value: `${res.order_name || 'N-gram'} (n=${res.n})`,
+                        sub: `${(res.corpus_tokens_count || 0).toLocaleString()} training tokens`
+                    });
+                    cards.push({
+                        label: 'Joint Probability P(W)',
+                        value: res.total_probability_scientific || (res.total_probability ? res.total_probability.toExponential(4) : '0.0'),
+                        sub: `log₂ P(W) = ${res.log2_probability}`
+                    });
+                    cards.push({
+                        label: 'Perplexity (PP)',
+                        value: String(res.perplexity),
+                        sub: (res.perplexity === 'Infinity' || res.perplexity === Infinity) ? 'Infinite (zero likelihood)' : 'Branching perplexity'
+                    });
+                    const smoothLabel = (res.smoothing === 'laplace') ? 'Laplace (+1)' : ((res.smoothing === 'add_k') ? `Add-${res.smoothing_k || 1}` : 'None (MLE)');
+                    cards.push({
+                        label: 'Smoothing & Vocab',
+                        value: smoothLabel,
+                        sub: `|V|=${res.vocabulary_size} · ${res.unseen_ngram_count} unseen transition${res.unseen_ngram_count === 1 ? '' : 's'}`
+                    });
+
+                    // Explanation Notice Box
+                    if (res.explanation) {
+                        noticeBox.style.display = 'block';
+                        noticeMsg.innerHTML = `<strong>🎲 N-Gram Demonstration Summary:</strong><p style="margin:0.35rem 0 0 0;font-size:0.84rem;line-height:1.5;">${escapeHtml(res.explanation)}</p><p style="margin:0.25rem 0 0 0;font-size:0.80rem;opacity:0.85;">${escapeHtml(res.unseen_handling_summary || '')}</p>`;
+                    }
+                }
+
+                // 5. LSI (Latent Semantic Indexing) Cards
+                else if (res.task === 'lsi_search' || res.rankings !== undefined || res.categories !== undefined) {
+                    const isSearch = (res.mode !== 'categorize');
+                    cards.push({
+                        label: 'LSI Operation Mode',
+                        value: isSearch ? 'Search Relevance' : 'Topic Clustering',
+                        sub: `Truncated SVD · ${res.engine || 'Linear algebra'}`
+                    });
+                    cards.push({
+                        label: 'Document Collection',
+                        value: `${res.num_documents || 0} Documents`,
+                        sub: `Vocabulary: ${res.vocabulary_size || 0} terms`
+                    });
+                    const adjText = res.k_adjustment_note ? ' (Adjusted)' : '';
+                    cards.push({
+                        label: 'Latent Components',
+                        value: `k = ${res.num_topics_used || 0}${adjText}`,
+                        sub: `Requested k = ${res.num_topics_requested || res.num_topics_used}`
+                    });
+                    if (isSearch && res.rankings && res.rankings.length > 0) {
+                        const topDoc = res.rankings[0];
+                        cards.push({
+                            label: 'Top Ranked Match',
+                            value: `${topDoc.doc_id} (${topDoc.similarity_percentage})`,
+                            sub: `Query: "${res.query || ''}"`
+                        });
+                    } else if (!isSearch && res.categories) {
+                        cards.push({
+                            label: 'Topic Clusters',
+                            value: `${res.categories.length} Categories`,
+                            sub: 'Clustered by dominant component'
+                        });
+                    }
+
+                    // Notice box for LSI explanation and k-adjustment warning
+                    if (res.explanation || res.k_adjustment_note) {
+                        noticeBox.style.display = 'block';
+                        const adjWarn = res.k_adjustment_note ? `<div style="margin-top:0.35rem;padding:0.4rem 0.6rem;background:#FFF3CD;border:var(--border-thin);border-radius:2px;color:#856404;font-size:0.8rem;"><strong>⚠️ Parameter Note:</strong> ${escapeHtml(res.k_adjustment_note)}</div>` : '';
+                        const lsiBadge = res.lsi_label_notice ? `<div style="margin-top:0.35rem;font-size:0.78rem;opacity:0.85;font-style:italic;">ℹ️ ${escapeHtml(res.lsi_label_notice)}</div>` : '';
+                        noticeMsg.innerHTML = `<strong>🔍 Latent Semantic Indexing (LSI) Analysis:</strong><p style="margin:0.35rem 0 0 0;font-size:0.84rem;line-height:1.5;">${escapeHtml(res.explanation)}</p>${adjWarn}${lsiBadge}`;
+                    }
+                }
+
+                // 6. TF-IDF Cards
+                else if (res.matrix !== undefined || (res.vocabulary_size !== undefined && res.task !== 'ngram_probability' && res.task !== 'lsi_search')) {
+                    cards.push({ label: 'Documents Analyzed', value: String(res.num_documents || 1), sub: 'Corpus collection' });
+                    cards.push({ label: 'Vocabulary Size', value: `${res.vocabulary_size || 0} terms`, sub: `Top ${res.vocabulary ? res.vocabulary.length : 0} features displayed` });
+                    if (res.vocabulary && res.vocabulary.length > 0) {
+                        cards.push({ label: 'Top Salient Term', value: res.vocabulary[0], sub: 'Highest corpus weight' });
+                    }
+                    if (res.options_used) {
+                        const opt = res.options_used;
+                        cards.push({ label: 'N-Gram Mode', value: opt.ngram_range, sub: opt.remove_stopwords ? 'Stopwords removed' : 'Raw vocabulary' });
+                    }
+                    // Show distinguishing insights notice
+                    if (res.distinguishing_analysis && res.distinguishing_analysis.length > 0) {
+                        noticeBox.style.display = 'block';
+                        noticeMsg.innerHTML = `<strong>💡 Discriminatory Terms Analysis:</strong><ul style="margin:0.35rem 0 0 1.25rem;padding:0;font-size:0.83rem;line-height:1.5;">${res.distinguishing_analysis.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`;
+                    }
+                }
+
+                // Method Used Card (WordNet, spaCy, Porter, etc.)
+                else if (res.method_used !== undefined) {
+                    const isFb = res.is_fallback;
+                    cards.push({
+                        label: 'Method Used',
+                        value: res.method_used.toUpperCase(),
+                        sub: isFb ? '⚠️ Fallback active' : `Primary (${res.method_requested || 'configured'})`
+                    });
+                }
+
+                // Algorithm description card
+                if (res.algorithm !== undefined) {
+                    const shortName = res.algorithm.split('(')[0].trim();
+                    cards.push({
+                        label: 'Algorithm Engine',
+                        value: shortName,
+                        sub: res.algorithm
+                    });
+                }
+
+                // Transformation stats card
+                if (res.stats && typeof res.stats === 'object' && res.stats.transformed_tokens != null) {
+                    const pct = res.stats.transformation_rate != null ? (res.stats.transformation_rate * 100).toFixed(0) + '%' : '';
+                    cards.push({
+                        label: 'Transformed Words',
+                        value: `${res.stats.transformed_tokens} / ${res.stats.total_tokens}`,
+                        sub: `${pct} modified to root/lemma`
+                    });
+                }
+
+                // Language Card (Text Analysis)
+                if (res.language !== undefined) {
+                    if (res.is_uncertain) {
+                        const langLabel = res.language !== 'unknown' ? `${res.language_name || res.language.toUpperCase()} (?)` : 'Uncertain';
+                        cards.push({
+                            label: 'Detected Language',
+                            value: langLabel,
+                            sub: `Status: ${res.language_status ? res.language_status.toUpperCase() : 'UNCERTAIN'}`
+                        });
+                        if (res.language_message) {
+                            noticeBox.style.display = 'block';
+                            noticeMsg.innerHTML = `<strong>⚠️ Language Detection Note:</strong> ${escapeHtml(res.language_message)}`;
+                        }
+                    } else {
+                        const confPct = res.language_confidence ? ` · ${(res.language_confidence * 100).toFixed(0)}% conf` : '';
+                        cards.push({
+                            label: 'Detected Language',
+                            value: res.language_name || res.language.toUpperCase(),
+                            sub: `Code: ${res.language.toUpperCase()}${confPct}`
+                        });
+                    }
+                }
+
+                // Word Count & Sentence Count
+                if (res.word_count !== undefined) {
+                    cards.push({ label: 'Word Count', value: Number(res.word_count).toLocaleString(), sub: 'Lexical words' });
+                }
+                if (res.sentence_count !== undefined) {
+                    cards.push({ label: 'Sentence Count', value: Number(res.sentence_count).toLocaleString(), sub: 'Segmented sentences' });
+                }
+
+            } else {
+                cards = [
+                    { label: 'Validated Chars', value: charCount.toLocaleString(), sub: 'Raw characters' },
+                    { label: 'Validated Words', value: wordCount.toLocaleString(), sub: 'Whitespace split' },
+                    { label: 'Route Endpoint', value: '200 OK', sub: 'POST /api/nlp/run' },
+                    { label: 'Schema Status', value: isCompleted ? 'Active' : 'Connected', sub: isCompleted ? 'Results computed' : 'Awaiting engine task' }
+                ];
+            }
+
+            cards.forEach(c => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'nlp-metric-card';
+                cardEl.innerHTML = `
+                    <div class="nlp-metric-label">${escapeHtml(c.label)}</div>
+                    <div class="nlp-metric-value">${escapeHtml(c.value)}</div>
+                    <div class="nlp-metric-sub">${escapeHtml(c.sub)}</div>
+                `;
+                metricsGrid.appendChild(cardEl);
+            });
+
+            // ── Visual Display Box (Tokens, POS tags, Embeddings Vector, or Classification Ranking) ──
+            if (data.result && Array.isArray(data.result.tagged_tokens) && data.result.tagged_tokens.length > 0) {
+                tokensWrap.style.display = 'block';
+                tokensCount.textContent = `${data.result.tagged_tokens.length} tagged tokens`;
+                tokensBox.innerHTML = data.result.tagged_tokens.map(item => {
+                    const subtag = item.pos ? `<span class="nlp-token-subtag">${escapeHtml(item.pos)}</span>` : '';
+                    return `<span class="nlp-token-pill" title="${escapeHtml(item.token)} ➔ ${escapeHtml(item.tag || item.pos)} (${escapeHtml(item.description || '')})"><strong>${escapeHtml(item.token)}</strong>${subtag}</span>`;
+                }).join('');
+            } else if (data.result && Array.isArray(data.result.vector) && data.result.vector.length > 0) {
+                tokensWrap.style.display = 'block';
+                tokensCount.textContent = `${data.result.dimensions}-dimensional dense vector preview`;
+                const previewDims = data.result.vector.slice(0, 36);
+                tokensBox.innerHTML = previewDims.map((val, idx) => {
+                    return `<span class="nlp-token-pill" title="Dimension ${idx}: ${val}"><span class="nlp-token-subtag">d${idx}</span>${Number(val).toFixed(4)}</span>`;
+                }).join('') + (data.result.vector.length > 36 ? `<span class="nlp-token-pill" style="opacity:0.75;font-style:italic;">+${data.result.vector.length - 36} more dimensions...</span>` : '');
+            } else if (data.result && Array.isArray(data.result.ranking) && data.result.ranking.length > 0) {
+                tokensWrap.style.display = 'block';
+                tokensCount.textContent = `Ranking for ${data.result.ranking.length} candidate categories`;
+                tokensBox.innerHTML = data.result.ranking.map(r => {
+                    const isTop = (r.rank === 1);
+                    const matchInfo = (r.matched_keywords && r.matched_keywords.length) ? ` · matches: ${escapeHtml(r.matched_keywords.join(', '))}` : '';
+                    return `<span class="nlp-token-pill${isTop ? ' changed' : ''}" style="margin-bottom:0.25rem;"><span class="nlp-token-subtag">#${r.rank}</span><strong>${escapeHtml(r.label)}</strong>: ${escapeHtml(r.percentage)}${matchInfo}</span>`;
+                }).join('');
+            } else if (data.result && Array.isArray(data.result.steps) && data.result.steps.length > 0) {
+                tokensWrap.style.display = 'block';
+                tokensCount.textContent = `Markov Chain Transitions (${data.result.steps.length} Steps) for Target Sequence`;
+                const stepItems = data.result.steps.map(s => {
+                    const isUnseen = s.is_unseen || s.status !== 'seen';
+                    const badgeBg = isUnseen ? '#FFE0D8' : '#c53030';
+                    const badgeTextColor = isUnseen ? '#c53030' : '#22543d';
+                    const pillBg = isUnseen ? '#FFE0D8' : '#C8F5E4';
+                    const statusText = s.status ? s.status.toUpperCase().replace(/_/g, ' ') : (isUnseen ? 'UNSEEN' : 'SEEN');
+                    return `
+                    <div style="margin-bottom:0.6rem;padding:0.6rem 0.8rem;background:var(--nb-card);border:var(--border-thin);border-radius:var(--radius-sm);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.5rem;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+                            <span class="nlp-token-subtag" style="font-weight:700;">Step ${s.step}</span>
+                            <span style="font-family:var(--font-mono);font-size:0.88rem;font-weight:600;color:var(--nb-black);">
+                                P(<strong>${escapeHtml(s.target_word)}</strong> | ${escapeHtml(s.context_str || 'ε')})
+                            </span>
+                            <span style="font-family:var(--font-mono);font-size:0.72rem;padding:0.15rem 0.45rem;border-radius:2px;background:${pillBg};color:${badgeTextColor};font-weight:700;">
+                                ${escapeHtml(statusText)}
+                            </span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;font-family:var(--font-mono);font-size:0.8rem;">
+                            <span title="Transition Formula" style="color:var(--nb-muted);">${escapeHtml(s.formula_str || '')}</span>
+                            <span style="font-weight:700;background:var(--nb-yellow);padding:0.15rem 0.45rem;border-radius:2px;border:var(--border-thin);">p = ${escapeHtml(s.probability_formatted || String(s.probability))}</span>
+                            <span style="color:var(--nb-muted);font-size:0.75rem;">log₂: ${s.log2_probability}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+                tokensBox.innerHTML = stepItems;
+            } else if (data.result && (data.result.task === 'lsi_search' || data.result.rankings !== undefined || data.result.categories !== undefined)) {
+                tokensWrap.style.display = 'block';
+                const isSearch = (data.result.mode !== 'categorize');
+                tokensCount.textContent = isSearch
+                    ? `LSI Semantic Search Rankings & Latent Concepts for "${data.result.query}"`
+                    : `LSI Topic Clusters & Semantic Categories (${data.result.num_topics_used} Latent Topics)`;
+
+                let html = '';
+
+                // 1. Latent Topics / Components section
+                if (Array.isArray(data.result.topics) && data.result.topics.length > 0) {
+                    const topicBlocks = data.result.topics.map(t => {
+                        const termPills = (t.top_terms || []).map(termObj => {
+                            const weightStr = (termObj.weight >= 0 ? '+' : '') + Number(termObj.weight).toFixed(3);
+                            return `<span class="nlp-token-pill" title="Loading: ${termObj.weight}"><span class="nlp-token-subtag">${weightStr}</span><strong>${escapeHtml(termObj.term)}</strong></span>`;
+                        }).join(' ');
+                        return `
+                        <div style="margin-bottom:0.6rem;padding:0.6rem 0.8rem;background:var(--nb-card);border:var(--border-thin);border-radius:var(--radius-sm);">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;flex-wrap:wrap;gap:0.4rem;">
+                                <span style="font-weight:700;font-size:0.86rem;color:var(--nb-black);font-family:var(--font-mono);">
+                                    ⚡ ${escapeHtml(t.topic_id)} <span style="font-weight:400;opacity:0.75;font-size:0.78rem;">(Singular Value σ = ${t.singular_value} · Variance = ${t.variance_explained})</span>
+                                </span>
+                            </div>
+                            <div style="display:flex;flex-wrap:wrap;gap:0.35rem;">${termPills}</div>
+                        </div>`;
+                    }).join('');
+
+                    html += `<div style="margin-bottom:1rem;"><div style="font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;color:var(--nb-muted);">📊 Latent SVD Topics & Component Terms</div>${topicBlocks}</div>`;
+                }
+
+                // 2. Rankings List (Search Mode)
+                if (isSearch && Array.isArray(data.result.rankings) && data.result.rankings.length > 0) {
+                    const rankBlocks = data.result.rankings.map(r => {
+                        const isTop = (r.rank === 1 && r.similarity > 0);
+                        const badgeBg = isTop ? 'var(--nb-yellow)' : '#E2E8F0';
+                        const coordsStr = (r.coordinates && r.coordinates.length > 0)
+                            ? `<span style="font-family:var(--font-mono);font-size:0.72rem;opacity:0.85;margin-left:0.5rem;" title="Latent coordinates">Coords: [${r.coordinates.join(', ')}]</span>`
+                            : '';
+                        return `
+                        <div style="margin-bottom:0.6rem;padding:0.6rem 0.8rem;background:var(--nb-card);border:var(--border-thin);border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:0.35rem;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;">
+                                <div style="display:flex;align-items:center;gap:0.5rem;">
+                                    <span class="nlp-token-subtag" style="font-weight:700;">Rank #${r.rank}</span>
+                                    <strong style="font-size:0.88rem;">${escapeHtml(r.doc_id)}</strong>
+                                    <span style="font-family:var(--font-mono);font-size:0.74rem;background:#EDF2F7;padding:0.1rem 0.4rem;border-radius:2px;">${escapeHtml(r.dominant_topic)}</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:0.4rem;">
+                                    <span style="font-weight:700;font-family:var(--font-mono);background:${badgeBg};padding:0.15rem 0.5rem;border-radius:2px;border:var(--border-thin);font-size:0.82rem;">
+                                        Cosine: ${r.similarity_percentage} (${r.similarity})
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="font-size:0.82rem;line-height:1.45;color:var(--nb-black);">${escapeHtml(r.snippet)}</div>
+                            ${coordsStr ? `<div style="font-size:0.74rem;color:var(--nb-muted);font-family:var(--font-mono);">${coordsStr}</div>` : ''}
+                        </div>`;
+                    }).join('');
+
+                    html += `<div><div style="font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;color:var(--nb-muted);">🎯 Semantic Search Relevance Ranking</div>${rankBlocks}</div>`;
+                }
+
+                // 3. Categories / Clusters (Categorize Mode)
+                if (!isSearch && Array.isArray(data.result.categories) && data.result.categories.length > 0) {
+                    const catBlocks = data.result.categories.map(cat => {
+                        const docsHtml = (cat.assigned_documents || []).map(d => {
+                            const coordsStr = (d.coordinates && d.coordinates.length > 0) ? ` · Coords: [${d.coordinates.join(', ')}]` : '';
+                            return `<div style="font-size:0.8rem;padding:0.35rem 0.5rem;background:var(--nb-surface);border:var(--border-thin);border-radius:2px;margin-bottom:0.3rem;"><strong>${escapeHtml(d.doc_id)}:</strong> ${escapeHtml(d.snippet)}<span style="opacity:0.75;font-size:0.72rem;font-family:var(--font-mono);">${coordsStr}</span></div>`;
+                        }).join('') || '<div style="font-size:0.78rem;font-style:italic;opacity:0.75;">No documents categorized in this topic component.</div>';
+
+                        return `
+                        <div style="margin-bottom:0.75rem;padding:0.6rem 0.8rem;background:var(--nb-card);border:var(--border-thin);border-radius:var(--radius-sm);">
+                            <div style="font-weight:700;font-size:0.86rem;margin-bottom:0.35rem;">
+                                📁 ${escapeHtml(cat.topic_id)} <span style="font-weight:400;font-size:0.78rem;opacity:0.8;">(${cat.assigned_documents_count} assigned document${cat.assigned_documents_count === 1 ? '' : 's'} · Top terms: ${escapeHtml(cat.summary)})</span>
+                            </div>
+                            ${docsHtml}
+                        </div>`;
+                    }).join('');
+
+                    html += `<div><div style="font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;color:var(--nb-muted);">📂 Document Clusters by Latent Topic</div>${catBlocks}</div>`;
+                }
+
+                // 4. Document Latent Coordinates (if requested)
+                if (data.result.documents && data.result.documents.length > 0 && isSearch) {
+                    const coordsRows = data.result.documents.map(d => {
+                        const coordsList = (d.coordinates || []).map((c, idx) => `<span class="nlp-token-pill" style="margin-right:0.25rem;"><span class="nlp-token-subtag">t${idx+1}</span>${Number(c).toFixed(3)}</span>`).join('');
+                        return `
+                        <div style="margin-bottom:0.4rem;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;padding:0.35rem 0.5rem;background:var(--nb-card);border:var(--border-thin);border-radius:2px;font-size:0.8rem;">
+                            <span><strong>${escapeHtml(d.doc_id)}</strong> (${escapeHtml(d.dominant_topic)})</span>
+                            <div style="display:flex;flex-wrap:wrap;gap:0.25rem;">${coordsList}</div>
+                        </div>`;
+                    }).join('');
+                    html += `<div style="margin-top:1rem;"><div style="font-weight:700;font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;color:var(--nb-muted);">📍 Document Projections in Reduced LSI Space</div>${coordsRows}</div>`;
+                }
+
+                tokensBox.innerHTML = html;
+            } else if (data.result && Array.isArray(data.result.documents) && data.result.documents.length > 0) {
+                tokensWrap.style.display = 'block';
+                tokensCount.textContent = `TF-IDF Distinctive Terms Across ${data.result.documents.length} Documents`;
+                tokensBox.innerHTML = data.result.documents.map(doc => {
+                    const termsPills = doc.top_terms.map(t => {
+                        const isDistinctive = doc.distinctive_terms && doc.distinctive_terms.some(dt => dt.term === t.term);
+                        const pillClass = isDistinctive ? ' changed' : '';
+                        return `<span class="nlp-token-pill${pillClass}" style="margin-right:0.35rem;margin-bottom:0.35rem;" title="TF: ${t.tf} · IDF: ${t.idf} · TF-IDF: ${t.score}"><span class="nlp-token-subtag">${t.score.toFixed(3)}</span><strong>${escapeHtml(t.term)}</strong></span>`;
+                    }).join('');
+                    return `<div style="margin-bottom:0.75rem;padding:0.6rem;background:var(--nb-card);border:var(--border-thin);border-radius:var(--radius-sm);"><div style="font-weight:700;font-size:0.82rem;margin-bottom:0.35rem;color:var(--nb-black);">${escapeHtml(doc.doc_id)}: <span style="font-weight:400;opacity:0.75;font-size:0.78rem;">${escapeHtml(doc.snippet)}</span></div><div style="display:flex;flex-wrap:wrap;gap:0.35rem;">${termsPills}</div></div>`;
+                }).join('');
+            } else if (data.result && Array.isArray(data.result.items) && data.result.items.length > 0) {
+                tokensWrap.style.display = 'block';
+                const changedNum = data.result.stats ? data.result.stats.transformed_tokens : data.result.items.filter(i => i.changed).length;
+                tokensCount.textContent = `${data.result.items.length} tokens (${changedNum} modified)`;
+                tokensBox.innerHTML = data.result.items.map(item => {
+                    const isChanged = item.changed;
+                    const changeClass = isChanged ? ' changed' : '';
+                    const subtag = item.pos ? `<span class="nlp-token-subtag">${escapeHtml(item.pos)}</span>` : '';
+                    const inner = isChanged
+                        ? `<span style="text-decoration:line-through;opacity:0.5;margin-right:4px;">${escapeHtml(item.original)}</span><strong>${escapeHtml(item.normalized)}</strong>`
+                        : escapeHtml(item.normalized);
+                    return `<span class="nlp-token-pill${changeClass}" title="${escapeHtml(item.original)} ➔ ${escapeHtml(item.normalized)} [${item.pos || ''}]">${inner}${subtag}</span>`;
+                }).join('');
+            } else if (data.result && Array.isArray(data.result.tokens) && data.result.tokens.length > 0) {
+                tokensWrap.style.display = 'block';
+                tokensCount.textContent = `${data.result.tokens.length} tokens`;
+                tokensBox.innerHTML = data.result.tokens.map(tok => {
+                    const tokText = (typeof tok === 'object') ? (tok.text || tok.token || JSON.stringify(tok)) : tok;
+                    const subtag = (typeof tok === 'object' && (tok.pos || tok.tag)) ? `<span class="nlp-token-subtag">${escapeHtml(tok.pos || tok.tag)}</span>` : '';
+                    return `<span class="nlp-token-pill">${escapeHtml(String(tokText))}${subtag}</span>`;
+                }).join('');
+            } else {
+                tokensWrap.style.display = 'none';
+            }
+
+            // Raw JSON Box
+            jsonCode.textContent = JSON.stringify(data, null, 2);
+
+            resultsSection.classList.add('show');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Copy JSON Button
+        function copyNLPJson() {
+            const jsonCode = document.getElementById('nlpJsonCode');
+            const btn = document.getElementById('btnCopyNLPJson');
+            if (!jsonCode || !btn) return;
+
+            navigator.clipboard.writeText(jsonCode.textContent).then(() => {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '&#10004; Copied!';
+                setTimeout(() => { btn.innerHTML = orig; }, 1800);
+            }).catch(() => {
+                btn.innerHTML = '&#10006; Copy failed';
+            });
+        }
+
+        // Initial setup on load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchNLPTools();
+            updateNLPTextStats();
+        });
     </script>
 </body>
 </html>

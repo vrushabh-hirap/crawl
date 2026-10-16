@@ -1,0 +1,22 @@
+{
+    "title": "Shop & Compare Products",
+    "paragraphs": [
+        "Check out ourlatestdeals below!"
+    ],
+    "tables": [
+        [
+            [
+                "Product",
+                "In Stock"
+            ],
+            [
+                "Item A",
+                "Yes"
+            ],
+            [
+                "Item B",
+                "No"
+            ]
+        ]
+    ]
+}
